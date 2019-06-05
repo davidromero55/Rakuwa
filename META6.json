@@ -1,0 +1,21 @@
+{
+    "perl" : "6.c",
+    "name" : "Rakuwa",
+    "api"  : "1",
+    "auth" : "github:davidromero55",
+    "version" : "0.0.1",
+    "description" : "Raku Web Aplication Framework",
+    "authors" : [ "David Romero" ],
+    "license" : "Artistic-2.0",
+    "provides" : {
+        "Rakuwa" : "lib/Rakuwa.pm6"
+    },
+    "depends" : [ ],
+    "build-depends" : [ ],
+    "test-depends" : [ ],
+    "resources" : [ ],
+    "tags": [
+      "Rakuwa", "Web", "Framework", "API"
+    ],
+    "source-url" : "git://github.com/davidromero55/Rakuwa.git"
+}

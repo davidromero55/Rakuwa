@@ -1,0 +1,15 @@
+use v6;
+use Crust::Request;
+
+sub app(%env) {
+    my @lines;
+    for %env.kv -> $key, $value {
+        push @lines, "$key => $value"
+    }
+
+    my $content = @lines.join("\n").encode;
+
+    my $req = Crust::Request.new(%env);
+    return 200, [], [$req.path-info];
+    #return 200, ['content-length' => $content.bytes], [$content];
+}
