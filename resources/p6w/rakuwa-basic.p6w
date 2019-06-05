@@ -1,15 +1,7 @@
 use v6;
-use Crust::Request;
+use Crust::Runner;
+use Rakuwa;
 
-sub app(%env) {
-    my @lines;
-    for %env.kv -> $key, $value {
-        push @lines, "$key => $value"
-    }
-
-    my $content = @lines.join("\n").encode;
-
-    my $req = Crust::Request.new(%env);
-    return 200, [], [$req.path-info];
-    #return 200, ['content-length' => $content.bytes], [$content];
-}
+my $runner = Crust::Runner.new;
+$runner.parse-options(@*ARGS);
+$runner.run(Rakuwa.new);

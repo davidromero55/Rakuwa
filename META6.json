@@ -10,7 +10,7 @@
     "provides" : {
         "Rakuwa" : "lib/Rakuwa.pm6"
     },
-    "depends" : [ ],
+    "depends" : [ "Crust" ],
     "build-depends" : [ ],
     "test-depends" : [ ],
     "resources" : [ "p6w/rakuwa-basic.p6w"],
