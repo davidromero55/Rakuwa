@@ -13,7 +13,7 @@
     "depends" : [ ],
     "build-depends" : [ ],
     "test-depends" : [ ],
-    "resources" : [ ],
+    "resources" : [ "p6w/rakuwa-basic.p6w"],
     "tags": [
       "Rakuwa", "Web", "Framework", "API"
     ],
