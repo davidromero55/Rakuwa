@@ -1,21 +1,35 @@
 {
-    "perl" : "6.c",
-    "name" : "Rakuwa",
-    "api"  : "1",
-    "auth" : "github:davidromero55",
-    "version" : "0.0.1",
-    "description" : "Raku Web Aplication Framework",
-    "authors" : [ "David Romero" ],
-    "license" : "Artistic-2.0",
-    "provides" : {
-        "Rakuwa" : "lib/Rakuwa.pm6"
-    },
-    "depends" : [ "Crust" ],
-    "build-depends" : [ ],
-    "test-depends" : [ ],
-    "resources" : [ "p6w/rakuwa-basic.p6w"],
-    "tags": [
-      "Rakuwa", "Web", "Framework", "API"
-    ],
-    "source-url" : "git://github.com/davidromero55/Rakuwa.git"
+  "name": "Rakuwa",
+  "description": "Raku Web Aplication Framework",
+  "version": "0.0.1",
+  "perl": "6.c",
+  "authors": [
+    "David Romero"
+  ],
+  "auth": "github:davidromero55",
+  "depends": [
+    "Crust",
+    "Template6"
+  ],
+  "build-depends": [],
+  "test-depends": [],
+  "provides": {
+    "Rakuwa": "lib/Rakuwa.pm6",
+    "Rakuwa::Conf": "lib/Rakuwa/Conf.pm6",
+    "Rakuwa::Layout": "lib/Rakuwa/Layout.pm6",
+    "Rakuwa::Page": "lib/Rakuwa/Page.pm6",
+    "Rakuwa::View": "lib/Rakuwa/View.pm6"
+  },
+  "resources": [
+    "p6w/rakuwa-basic.p6w"
+  ],
+  "license": "Artistic-2.0",
+  "tags": [
+    "Rakuwa",
+    "Web",
+    "Framework",
+    "API"
+  ],
+  "api": "1",
+  "source-url": "git://github.com/davidromero55/Rakuwa.git"
 }

@@ -1,2 +1,4 @@
 lib/.precomp
 lib/.precomp/*
+.idea/*
+*.iml
