@@ -16,6 +16,8 @@
   "provides": {
     "Rakuwa": "lib/Rakuwa.pm6",
     "Rakuwa::Conf": "lib/Rakuwa/Conf.pm6",
+    "Rakuwa::File": "lib/Rakuwa/File.pm6",
+    "Rakuwa::Handler": "lib/Rakuwa/Handler.pm6",
     "Rakuwa::Layout": "lib/Rakuwa/Layout.pm6",
     "Rakuwa::Page": "lib/Rakuwa/Page.pm6",
     "Rakuwa::View": "lib/Rakuwa/View.pm6"

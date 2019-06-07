@@ -1,7 +1,7 @@
 use v6;
 use Crust::Runner;
-use Rakuwa;
+use Rakuwa::Handler;
 
 my $runner = Crust::Runner.new;
 $runner.parse-options(@*ARGS);
-$runner.run(Rakuwa.new);
+$runner.run(Rakuwa::Handler.new);
