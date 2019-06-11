@@ -1,10 +1,12 @@
 use Crust::Request;
+use Rakuwa::Conf;
 use Hash::MultiValue;
 
-class Rakuwa {
+class Rakuwa does Rakuwa::Conf {
     has Crust::Request $.request;
     has Hash::MultiValue $.params is rw;
     has %.controller is rw;
+    has %.page is rw;
     has Int $.status is rw;
     has %.headers is rw;
 
@@ -12,7 +14,7 @@ class Rakuwa {
         $.status  = 200;
         %.headers{'Content-Type'} = 'text/html';
         $.params = $.request.parameters;
-        self.prepare_controller
+        self.prepare_controller;
 
         # ToDo
         # Session
@@ -21,6 +23,11 @@ class Rakuwa {
 
     }
 
+    method init_view {
+        $.page{'title'}       = 'Rakuwa';
+        $.page{'keywords'}    = '';
+        $.page{'description'} = '';
+    }
     method get_status () returns Int {
         return $.status;
     }

@@ -2,6 +2,9 @@ use Crust::Request;
 use Rakuwa;
 use Rakuwa::Conf;
 use Rakuwa::File;
+use Rakuwa::Layout;
+use Rakuwa::View;
+use Rakuwa::Test::Controller;
 
 class Rakuwa::Handler does Callable does Rakuwa::Conf {
     has @.body    is rw;
@@ -25,10 +28,38 @@ class Rakuwa::Handler does Callable does Rakuwa::Conf {
             return $Rakuwa.get_status , $Rakuwa.get_headers, @.body;
         }
 
-#        my $Layout = Rakuwa::Layout.new(request => $.request, params => $.params, controller => $.controller);
-#        my $View   = Rakuwa::View.new(request => $.request, params => $.params, controller => $.controller);
-#
-#        @.body.push($Layout.process( $View.process, {}, '') );
+#        # Controller exist?
+#        my $dynamic_module_name = 'Rakuwa::' ~ $Rakuwa.controller{'Controller'} ~ '::Controller';
+#        try require ::($dynamic_module_name);
+#        if ::($dynamic_module_name) ~~ Failure {
+#            @.body.push( $Rakuwa.controller{'Controller'} ~ " controller does not exist." ~ $dynamic_module_name);
+#            return $Rakuwa.get_status , $Rakuwa.get_headers, @.body;
+#        }
+
+
+        # API, JSON Responses
+        if $Rakuwa.controller{'Mode'} eq 'API' {
+
+        }
+
+
+
+        # Actions
+
+        # HTML Responses
+        $Rakuwa.init_view;
+        my $Layout = Rakuwa::Layout.new(rakuwa => $Rakuwa);
+
+        # View exist?
+        my $dynamic_view_name = 'Rakuwa::' ~ $Rakuwa.controller{'Controller'} ~ '::View';
+        try require ::($dynamic_view_name);
+        if ::($dynamic_view_name) ~~ Failure {
+            @.body.push( $Rakuwa.controller{'Controller'} ~ " controller does not exist." ~ $dynamic_view_name);
+            return $Rakuwa.get_status , $Rakuwa.get_headers, @.body;
+        }
+
+        my $View   = ::($dynamic_view_name).new(rakuwa => $Rakuwa);
+        @.body.push($Layout.process( $View.process , {}, '') );
 #
 #        if $.debug {
 #            # ENV Data

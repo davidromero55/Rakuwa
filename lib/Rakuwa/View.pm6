@@ -1,30 +1,25 @@
-use Rakuwa::Page;
-use Crust::Request;
+use Rakuwa;
 
-class Rakuwa::View does Rakuwa::Page {
-    has Crust::Request $.request;
-    has Hash::MultiValue $.params;
-    has %.controller;
+role Rakuwa::View {
+    has Rakuwa $.rakuwa;
+    has Str $.template is rw;
 
     method process () returns Str {
-        my Str $HTML = '';
-        for $.params.kv -> $key, $val {
-            $HTML = $HTML ~ "$key = $val <br>";
-        }
-        my Str $sub_name = $.controller{'View'};
+        my Str $sub_name = $.rakuwa.controller{'View'};
         $sub_name ~~ s:g/(<[A..Z]>)/_$0/;
         $sub_name ~~ s:g/\W//;
         $sub_name = "display" ~ $sub_name.lc;
-        $HTML = $HTML ~ "SUBNAME -> $sub_name <br>";
         my $has_method = self.^lookup($sub_name);
-        #return "-|-" ~ $has_method.perl ~ "-|-";
         if $has_method.perl eq 'Mu' {
             return "Method '$sub_name' not defined.";
-            # ToDo. Send the message using a message class
-            #  add_msg('danger',"sub '$sub_name' not defined.\n");
-            #  return $self->get_msg();
         } else {
-            return self."$sub_name"();
+            $.template = 'templates/' ~ $.rakuwa.conf<Template><TemplateID> ~ '/' ~ $.rakuwa.controller{'Controller'} ~ '/' ~ $sub_name;
+            my $full_template_name = $.rakuwa.conf{'App'}{'HomeDir'} ~ '/' ~ $.template ~ '.tt';
+            if "$full_template_name".IO.e {
+                return self."$sub_name"();
+            }else{
+                return "Template $.template does not exist.";
+            }
         }
     }
 

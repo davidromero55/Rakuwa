@@ -1,7 +1,6 @@
 use Rakuwa;
 use Rakuwa::Conf;
 use Crust::Request;
-use MIME::Types;
 
 class Rakuwa::File does Rakuwa::Conf {
     has Rakuwa $.rakuwa;
