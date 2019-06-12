@@ -89,7 +89,7 @@ class Rakuwa::Handler does Callable does Rakuwa::Conf {
 #
 #            @.body.push('.....</body></html>');
 #        }
-
+        $Rakuwa.finish;
         return $Rakuwa.get_status , $Rakuwa.get_headers, @.body;
     }
 }

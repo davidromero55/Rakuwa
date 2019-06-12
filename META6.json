@@ -9,7 +9,8 @@
   "auth": "github:davidromero55",
   "depends": [
     "Crust",
-    "Template6"
+    "Template6",
+    "DB::MySQL"
   ],
   "build-depends": [],
   "test-depends": [],

@@ -1,10 +1,16 @@
 use Rakuwa;
+use DB::MySQL;
 
 role Rakuwa::View {
     has Rakuwa $.rakuwa;
+    has DB::MySQL $.db is rw;
     has Str $.template is rw;
 
     method process () returns Str {
+        if $.rakuwa.db.defined {
+            $.db = $.rakuwa.db;
+        }
+
         my Str $sub_name = $.rakuwa.controller{'View'};
         $sub_name ~~ s:g/(<[A..Z]>)/_$0/;
         $sub_name ~~ s:g/\W//;

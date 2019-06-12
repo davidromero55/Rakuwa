@@ -15,7 +15,13 @@ class Rakuwa::Test::View does Rakuwa::View {
             %params{$key} = $val;
         }
 
+        my $date = '';
+        if $.rakuwa.db.defined {
+            $date = $.rakuwa.db.query('SELECT NOW()').arrays[0];
+        }
         my $TT = Template6.new(path => [$.rakuwa.conf{'App'}{'HomeDir'} ~ '/']);
-        return $TT.process($.template, :page($.rakuwa.page), :conf($.rakuwa.conf), :controller($.rakuwa.controller), :params(%params), :env(%env), :headers($.rakuwa.headers));
+        return $TT.process($.template,
+                :page($.rakuwa.page), :conf($.rakuwa.conf), :controller($.rakuwa.controller),
+                :params(%params), :env(%env), :headers($.rakuwa.headers), :date($date));
     }
 }

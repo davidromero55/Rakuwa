@@ -1,6 +1,7 @@
 use Crust::Request;
 use Rakuwa::Conf;
 use Hash::MultiValue;
+use DB::MySQL;
 
 class Rakuwa does Rakuwa::Conf {
     has Crust::Request $.request;
@@ -9,6 +10,7 @@ class Rakuwa does Rakuwa::Conf {
     has %.page is rw;
     has Int $.status is rw;
     has %.headers is rw;
+    has DB::MySQL $.db is rw;
 
     method init () {
         $.status  = 200;
@@ -16,11 +18,27 @@ class Rakuwa does Rakuwa::Conf {
         $.params = $.request.parameters;
         self.prepare_controller;
 
+        # Database
+        if $.conf{'DB'}.defined > 0 {
+            $.db = DB::MySQL.new(
+                    :host($.conf{'DB'}{'host'}),
+                    :port($.conf{'DB'}{'port'}),
+                    :user($.conf{'DB'}{'user'}),
+                    :password($.conf{'DB'}{'password'}),
+                    :database($.conf{'DB'}{'database'}),
+                    );
+        }
+
         # ToDo
         # Session
-        # Database
         # Email
 
+    }
+
+    method finish {
+        if $.db.defined {
+            $.db.finish();
+        }
     }
 
     method init_view {
