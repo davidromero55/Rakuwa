@@ -10,17 +10,22 @@
   "depends": [
     "Crust",
     "Template6",
-    "DB::MySQL"
+    "DB::MySQL",
+    "JSON::Fast"
   ],
   "build-depends": [],
   "test-depends": [],
   "provides": {
     "Rakuwa": "lib/Rakuwa.pm6",
+    "Rakuwa::API": "lib/Rakuwa/API.pm6",
+    "Rakuwa::Common": "lib/Rakuwa/Common.pm6",
     "Rakuwa::Conf": "lib/Rakuwa/Conf.pm6",
     "Rakuwa::Controller": "lib/Rakuwa/Controller.pm6",
     "Rakuwa::File": "lib/Rakuwa/File.pm6",
     "Rakuwa::Handler": "lib/Rakuwa/Handler.pm6",
     "Rakuwa::Layout": "lib/Rakuwa/Layout.pm6",
+    "Rakuwa::List": "lib/Rakuwa/List.pm6",
+    "Rakuwa::Test::API": "lib/Rakuwa/Test/API.pm6",
     "Rakuwa::Test::Controller": "lib/Rakuwa/Test/Controller.pm6",
     "Rakuwa::Test::View": "lib/Rakuwa/Test/View.pm6",
     "Rakuwa::View": "lib/Rakuwa/View.pm6"
@@ -33,7 +38,11 @@
     "Rakuwa",
     "Web",
     "Framework",
-    "API"
+    "API",
+    "perl6-module",
+    "perl6-application",
+    "Raku",
+    "perl6"
   ],
   "api": "1",
   "source-url": "git://github.com/davidromero55/Rakuwa.git"

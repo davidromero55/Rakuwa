@@ -4,6 +4,7 @@ use Rakuwa::Conf;
 use Rakuwa::File;
 use Rakuwa::Layout;
 use Rakuwa::View;
+use Rakuwa::List;
 use Rakuwa::Test::Controller;
 
 class Rakuwa::Handler does Callable does Rakuwa::Conf {
@@ -39,7 +40,16 @@ class Rakuwa::Handler does Callable does Rakuwa::Conf {
 
         # API, JSON Responses
         if $Rakuwa.controller{'Mode'} eq 'API' {
+            my $dynamic_api_name = 'Rakuwa::' ~ $Rakuwa.controller{'Controller'} ~ '::API';
+            try require ::($dynamic_api_name);
+            if ::($dynamic_api_name) ~~ Failure {
+                @.body.push( $Rakuwa.controller{'Controller'} ~ " API does not exist." ~ $dynamic_api_name);
+                return $Rakuwa.get_status , $Rakuwa.get_headers, @.body;
+            }
 
+            my $Api   = ::($dynamic_api_name).new(rakuwa => $Rakuwa);
+            @.body.push( $Api.process , {}, '' );
+            return $Rakuwa.get_status , $Rakuwa.get_headers, @.body;
         }
 
 
