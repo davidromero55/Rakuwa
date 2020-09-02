@@ -4,7 +4,7 @@ use Rakuwa::Conf;
 use Rakuwa::File;
 use Rakuwa::Layout;
 use Rakuwa::View;
-use Rakuwa::List;
+#use Rakuwa::List;
 use Rakuwa::Test::Controller;
 
 class Rakuwa::Handler does Callable does Rakuwa::Conf {
@@ -103,4 +103,3 @@ class Rakuwa::Handler does Callable does Rakuwa::Conf {
         return $Rakuwa.get_status , $Rakuwa.get_headers, @.body;
     }
 }
-
