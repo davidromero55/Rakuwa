@@ -1,5 +1,6 @@
 use Crust::Request;
 use Rakuwa::Conf;
+use Rakuwa::Session;
 use Hash::MultiValue;
 use DB::MySQL;
 
@@ -10,9 +11,10 @@ class Rakuwa does Rakuwa::Conf {
     has %.page is rw;
     has Int $.status is rw;
     has %.headers is rw;
+    has Rakuwa::Session $.session is rw;
     has DB::MySQL $.db is rw;
 
-    method init () {
+    method init (%env) {
         $.status  = 200;
         %.headers{'Content-Type'} = 'text/html';
         $.params = $.request.parameters;
@@ -29,8 +31,11 @@ class Rakuwa does Rakuwa::Conf {
                     );
         }
 
-        # ToDo
         # Session
+        $.session = Rakuwa::Session.new();
+        $.session.init((%env<HTTP_COOKIE> || ''));
+
+        # ToDo
         # Email
 
     }
@@ -52,6 +57,9 @@ class Rakuwa does Rakuwa::Conf {
 
     method get_headers () returns Array {
         my @headers = [];
+
+        %.headers{'Set-Cookie'} = $.session.get_cookie();
+
         for %.headers.kv -> $key, $val {
             @headers.push($key => $val);
         }

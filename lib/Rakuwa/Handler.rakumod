@@ -19,7 +19,7 @@ class Rakuwa::Handler does Callable does Rakuwa::Conf {
          @.body = [];
          my $Request = Crust::Request.new(%env);
          my $Rakuwa = Rakuwa.new( request => Crust::Request.new(%env) );
-         $Rakuwa.init;
+         $Rakuwa.init(%env);
 
          # Static Files
          if $Rakuwa.controller{'Controller'} eq 'File' {

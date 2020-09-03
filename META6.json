@@ -11,7 +11,10 @@
     "Crust",
     "Template6",
     "DB::MySQL",
-    "JSON::Fast"
+    "JSON::Fast",
+    "Cookie::Baker",
+    "Digest::SHA",
+    "JSON::Tiny"
   ],
   "build-depends": [],
   "test-depends": [],
