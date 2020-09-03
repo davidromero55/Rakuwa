@@ -59,42 +59,45 @@ class Rakuwa does Rakuwa::Conf {
     }
 
     method prepare_controller {
-        my $path_info = $.request.env{'PATH_INFO'};
+        my $script_url = $.request.env{'SCRIPT_URL'};
         %.controller = (
-                'Mode' => 'WA','Layout' => 'Public',
-                        'Controller' => '', 'View' => '', 'SubView' => '', 'UrlId' => '');
-        my @parts = split /\//, $path_info;
+                'Mode' => 'WA',
+                'Layout' => 'Public',
+                'Controller' => '',
+                'View' => '',
+                'SubView' => '',
+                'UrlId' => '');
+        my @parts = $script_url.split('/');
         @parts.shift;
 
-        if $path_info ~~ m/\. .**  1..4 $/ {
-            # File Controller
-            %.controller{'Mode'} = 'File';
-            %.controller{'Controller'} = 'File';
-            %.controller{'View'}       = $path_info;
+        if $script_url ~~ m/\. .**  1..4 $/ {
+             # File Controller
+             %.controller{'Mode'} = 'File';
+             %.controller{'Controller'} = 'File';
+             %.controller{'View'}       = $script_url;
         } elsif @parts[0] eq 'API' {
-            %.controller{'Mode'} = 'API';
-            %.headers{'Content-Type'} = 'application/json';
-            if @parts[1].defined { %.controller{'Controller'} = @parts[1] }
-            if @parts[2].defined { %.controller{'View'}       = @parts[2] }
-            if @parts[3].defined { %.controller{'SubView'}    = @parts[3] }
-            if @parts[4].defined { %.controller{'UrlId'}      = @parts[4] }
-            if %.controller{'Controller'}.codes == 0 {
-                %.controller{'Controller'} = 'API';
-            }
+             %.controller{'Mode'} = 'API';
+             %.headers{'Content-Type'} = 'application/json';
+             if @parts[1].defined { %.controller{'Controller'} = @parts[1] }
+             if @parts[2].defined { %.controller{'View'}       = @parts[2] }
+             if @parts[3].defined { %.controller{'SubView'}    = @parts[3] }
+             if @parts[4].defined { %.controller{'UrlId'}      = @parts[4] }
+             if %.controller{'Controller'}.codes == 0 {
+                 %.controller{'Controller'} = 'API';
+             }
         } else {
-            %.controller{'Mode'} = 'WA';
-            if @parts[0].defined { %.controller{'Controller'} = @parts[0] }
-            if @parts[1].defined { %.controller{'View'}       = @parts[1] }
-            if @parts[2].defined { %.controller{'SubView'}    = @parts[2] }
-            if @parts[3].defined { %.controller{'UrlId'}      = @parts[3] }
+             %.controller{'Mode'} = 'WA';
+             if @parts[0].defined { %.controller{'Controller'} = @parts[0] }
+             if @parts[1].defined { %.controller{'View'}       = @parts[1] }
+             if @parts[2].defined { %.controller{'SubView'}    = @parts[2] }
+             if @parts[3].defined { %.controller{'UrlId'}      = @parts[3] }
 
-            if %.controller{'Controller'}.codes == 0 {
-                %.controller{'Controller'} = 'Static';
-            }
+             if %.controller{'Controller'}.codes == 0 {
+                 %.controller{'Controller'} = 'Static';
+             }
         }
         if %.controller{'View'}.codes == 0 {
-            %.controller{'View'} = 'Home';
+             %.controller{'View'} = 'Home';
         }
     }
-
 }
