@@ -3,11 +3,11 @@ use JSON::Tiny;
 
 
 class Rakuwa::Session::SerializerJson does Rakuwa::Session::Serializer {
-  method serializer($data) returns Str {
+  method serialize($data) returns Str {
     return to-json $data;
   }
 
-  method deserializer(Str $json_str) returns Hash {
+  method deserialize(Str $json_str) returns Hash {
     if ($json_str.codes <= 0) {
       $json_str = '{}';
     }

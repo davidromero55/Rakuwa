@@ -12,7 +12,6 @@ class Rakuwa::Session does Rakuwa::Conf {
   has Bool $.modified is rw; # True only if data has been modified
   has Bool $.expired is rw; # Mark session as expired
   has Bool $.is-new; # Mark session as being new
-  has Bool $.change-id is rw; # Set this True if you want to keep the session, but want to change IDs
   has Bool $.no-store is rw; # Set this True if you don't want this to be stored
   has Rakuwa::Session::Store $.store is rw;
   has Rakuwa::Session::Serializer $.serializer is rw;
@@ -20,9 +19,6 @@ class Rakuwa::Session does Rakuwa::Conf {
   method init(Str $cookie_header) {
     my %crushed = crush-cookie($cookie_header);
     $.cookie_id = %crushed{$.conf{'Session'}{'Name'}} || self.id_generator();
-
-    say "test---";
-    say $.cookie_id;
 
     my $store_module_name = 'Rakuwa::Session::Store' ~ $.conf{'Session'}{'Store'};
     require ::($store_module_name);
@@ -33,13 +29,13 @@ class Rakuwa::Session does Rakuwa::Conf {
     $.serializer = ::($serializer_module_name).new();
 
     my $session_data = $.store.get($.cookie_id);
-    %.data = $.serializer.deserializer($session_data || '{}');
+    %.data = $.serializer.deserialize($session_data || '{}');
   }
 
   method finalize() {
       my $need-store = False;
 
-      if (($.is-new && !$.has-keys) || $.modified || $.expired || $.change-id)
+      if (($.is-new && !$.has-keys) || $.modified || $.expired)
       {
           $need-store = True;
       }
@@ -49,22 +45,16 @@ class Rakuwa::Session does Rakuwa::Conf {
       }
 
       my $set-cookie = False;
-      if ($.is-new && $.keep-empty && !$.has-keys) || ($.is-new && $.modified) || $.expired || $.change-id
+      if ($.is-new && $.keep-empty && !$.has-keys) || ($.is-new && $.modified) || $.expired
       {
           $set-cookie = True;
       }
 
       if $need-store {
-          my $id = $.id;
+          my $id = $.cookie_id;
           if $.expired {
               $.store.remove($id);
           } else {
-              if $.change-id {
-                  $.store.remove($id);
-                  $id = self.id_generator();
-                  $.id = $id;
-              }
-
               my $val = $.serializer.serialize(%.data);
               $.store.set($id, $val);
           }

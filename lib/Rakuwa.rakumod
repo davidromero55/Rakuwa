@@ -35,15 +35,27 @@ class Rakuwa does Rakuwa::Conf {
         $.session = Rakuwa::Session.new();
         $.session.init((%env<HTTP_COOKIE> || ''));
 
-        # ToDo
-        # Email
-
     }
 
-    method finish {
-        if $.db.defined {
-            $.db.finish();
-        }
+    method finalize {
+        $.session.finalize();
+      say "Finish Rakuwa2 ";
+      say "Finish Rakuwa";
+      say "Finish Rakuwa3 ";
+      say $.db.raku;
+      say "Finish Rakuwa6";
+      say $.session.raku;
+      say "Finish Rakuwa5";
+
+      if ($.db) {
+        say "Finish db";
+        $.db.finish();
+      }
+      if ($.session) {
+        say "Finish session";
+        $.session.finalize();
+      }
+      say "Finish All";
     }
 
     method init_view {
