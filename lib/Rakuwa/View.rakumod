@@ -7,7 +7,7 @@ role Rakuwa::View {
     has Str $.template is rw;
 
     method process () returns Str {
-        if $.rakuwa.db.defined {
+        with $.rakuwa.db {
             $.db = $.rakuwa.db;
         }
 
@@ -21,11 +21,14 @@ role Rakuwa::View {
         } else {
             $.template = 'templates/' ~ $.rakuwa.conf<Template><TemplateID> ~ '/' ~ $.rakuwa.controller{'Controller'} ~ '/' ~ $sub_name;
             my $full_template_name = $.rakuwa.conf{'App'}{'HomeDir'} ~ '/' ~ $.template ~ '.tt';
-            if "$full_template_name".IO.e {
-                return self."$sub_name"();
-            }else{
-                return "Template $.template does not exist.";
-            }
+
+            # Some views does not require personal template, so this code goes else where
+#            if "$full_template_name".IO.e {
+
+#            }else{
+#                return "Template $.template does not exist.";
+#            }
+            return self."$sub_name"();
         }
     }
 

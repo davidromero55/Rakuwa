@@ -1,4 +1,5 @@
 use Rakuwa::View;
+use Rakuwa::Form;
 use Hash::MultiValue;
 use Template6;
 
@@ -25,8 +26,20 @@ class Rakuwa::Test::View does Rakuwa::View {
         $.rakuwa.session.set('TestId',$id);
 
         my $TT = Template6.new(path => [$.rakuwa.conf{'App'}{'HomeDir'} ~ '/']);
-        return $TT.process($.template,
-                :page($.rakuwa.page), :conf($.rakuwa.conf), :controller($.rakuwa.controller),
-                :params(%params), :env(%env), :headers($.rakuwa.headers), :date($date), :test_id($id));
+        return $TT.process($.template, :page($.rakuwa.page), :conf($.rakuwa.conf), :controller($.rakuwa.controller), :params(%params), :env(%env), :headers($.rakuwa.headers), :date($date), :test_id($id));
     }
+
+    method display_form1 () returns Str {
+        my %params;
+        for $.rakuwa.params.kv -> $key, $val {
+            %params{$key} = $val;
+        }
+        my $Form = Rakuwa::Form.new(
+                rakuwa => $.rakuwa,
+                fields => [qw/email password/],
+                values => %params);
+
+        return $Form.render();
+    }
+
 }
