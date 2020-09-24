@@ -8,6 +8,7 @@ class Rakuwa does Rakuwa::Conf {
     has Crust::Request $.request;
     has Hash::MultiValue $.params is rw;
     has %.controller is rw;
+    has %.env is rw;
     has %.page is rw;
     has Int $.status is rw;
     has %.headers is rw;
@@ -15,6 +16,8 @@ class Rakuwa does Rakuwa::Conf {
     has DB::MySQL $.db is rw;
 
     method init (%env) {
+        %.env = %env;
+
         $.status  = 200;
         %.headers{'Content-Type'} = 'text/html';
         $.params = $.request.parameters;
@@ -39,23 +42,15 @@ class Rakuwa does Rakuwa::Conf {
 
     method finalize {
         $.session.finalize();
-      say "Finish Rakuwa2 ";
-      say "Finish Rakuwa";
-      say "Finish Rakuwa3 ";
-      say $.db.raku;
-      say "Finish Rakuwa6";
-      say $.session.raku;
-      say "Finish Rakuwa5";
+        say $.db.raku;
+        say $.session.raku;
 
-      if ($.db) {
-        say "Finish db";
-        $.db.finish();
-      }
-      if ($.session) {
-        say "Finish session";
-        $.session.finalize();
-      }
-      say "Finish All";
+        if ($.db) {
+            $.db.finish();
+        }
+        if ($.session) {
+            $.session.finalize();
+        }
     }
 
     method init_view {
