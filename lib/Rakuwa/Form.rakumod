@@ -15,6 +15,7 @@ class Rakuwa::Form does Rakuwa::Common does Rakuwa::Conf {
     has @.tabs is rw;
     has @.btnClass is rw = ('btn-primary','btn-secondary','btn-danger','btn-secondary','btn-secondary','btn-secondary');
     has Str $.class is rw = 'form-horizontal needs-validation';
+    has Str $.enctype is rw = "";
 
     submethod TWEAK() {
 
@@ -163,6 +164,52 @@ class Rakuwa::Form does Rakuwa::Common does Rakuwa::Conf {
         }
 
         given %.fieldsAttrs{$fieldName}{'type'} {
+            when 'textarea' {
+                for %.fieldsAttrs{$fieldName}.kv -> $key, $value {
+                    next if ($key eq 'id');
+                    next if ($key eq 'name');
+                    next if ($key eq 'type');
+                    next if ($key eq 'invalid_msg');
+                    next if ($key eq 'help');
+                    next if ($key eq 'override');
+                    next if ($key eq 'label');
+                    next if ($key eq 'value');
+                    next if ($key eq 'span');
+                    $fieldHtml = $fieldHtml ~ $key ~ '="' ~ $value ~ '" ';
+                }
+                %.fieldsAttrs{$fieldName}{'value'} = '' unless (%.fieldsAttrs{$fieldName}{'value'});
+                my $value = %.fieldsAttrs{$fieldName}{'value'};
+                $value ~~ s:g/&/&amp;/;
+                $value ~~ s:g/\</&lt;/;
+                $value ~~ s:g/\>/&gt;/;
+                $fieldHtml = '<textarea name="' ~ $fieldName ~ '" id="' ~ $fieldName ~ '" ' ~ $fieldHtml ~ '>' ~ $value ~ '</textarea>';
+            }
+            when 'checkbox' {
+                %.fieldsAttrs{$fieldName}{'class'} = 'form-check-input' if (%.fieldsAttrs{$fieldName}{'class'} eq 'form-control form-control-sm');
+                for %.fieldsAttrs{$fieldName}.kv -> $key, $value {
+                    next if ($key eq 'id');
+                    next if ($key eq 'name');
+                    next if ($key eq 'type');
+                    next if ($key eq 'invalid_msg');
+                    next if ($key eq 'help');
+                    next if ($key eq 'override');
+                    next if ($key eq 'label');
+                    next if ($key eq 'span');
+                    if ($key eq 'value'){
+                        if ($value){
+                            $fieldHtml .= ' checked="1" ';
+                        }
+                    } else {
+                        $fieldHtml = $fieldHtml ~ $key ~ '="' ~ $value ~ '" ';
+                    }
+                }
+                $fieldHtml  = '<input name="' ~ $fieldName ~ '" id="' ~ $fieldName ~ '" type="' ~ %.fieldsAttrs{$fieldName}{'type'} ~ '" value="1" ' ~ $fieldHtml ~ '/>';
+                if (%.fieldsAttrs{$fieldName}{'check_label'}) {
+                    $fieldHtml = $fieldHtml ~ "\n" ~ '<label class="form-check-label" for="' ~ $fieldName ~ '">' ~ %.fieldsAttrs{$fieldName}{'check_label'} ~ '</label>';
+                } else {
+                    $fieldHtml = $fieldHtml ~ "\n" ~ '<label class="form-check-label" for="' ~ $fieldName ~ '">' ~ %.fieldsAttrs{$fieldName}{'label'} ~ '</label>' if (%.fieldsAttrs{$fieldName}{'label'});
+                }
+            }
             when 'password' {
                 for %.fieldsAttrs{$fieldName}.kv -> $key, $value {
                     next if ($key eq 'id');
@@ -177,7 +224,68 @@ class Rakuwa::Form does Rakuwa::Common does Rakuwa::Conf {
                     $fieldHtml = $fieldHtml ~ $key ~ '="' ~ $value ~ '" ';
                 }
                 $fieldHtml = '<input name="' ~ $fieldName ~ '" id="' ~ $fieldName ~ '" type="' ~ %.fieldsAttrs{$fieldName}{'type'} ~ '" ' ~ $fieldHtml ~ '/>';
-             }
+            }
+            when 'file' {
+                %.fieldsAttrs{$fieldName}{'class'} = 'custom-file-input' if (%.fieldsAttrs{$fieldName}{'class'} eq 'form-control form-control-sm');
+                for %.fieldsAttrs{$fieldName}.kv -> $key, $value {
+                    next if ($key eq 'id');
+                    next if ($key eq 'name');
+                    next if ($key eq 'type');
+                    next if ($key eq 'invalid_msg');
+                    next if ($key eq 'help');
+                    next if ($key eq 'override');
+                    next if ($key eq 'label');
+                    next if ($key eq 'value');
+                    next if ($key eq 'span');
+                    $fieldHtml = $fieldHtml ~ $key ~ '="' ~ $value ~ '" ';
+                }
+                $fieldHtml = '<input name="' ~ $fieldName ~ '" id="' ~ $fieldName ~ '" type="' ~ %.fieldsAttrs{$fieldName}{'type'} ~ '" ' ~ $fieldHtml ~ '/>' ~ '<label class="custom-file-label" for="' ~ $fieldName ~ '"></label>';
+                $.enctype = "multipart/form-data";
+            }
+            when 'select' {
+                my $fieldOptions = '';
+                for %.fieldsAttrs{$fieldName}.kv -> $key, $value {
+                    next if ($key eq 'id');
+                    next if ($key eq 'name');
+                    next if ($key eq 'type');
+                    next if ($key eq 'invalid_msg');
+                    next if ($key eq 'help');
+                    next if ($key eq 'override');
+                    next if ($key eq 'selectname');
+                    next if ($key eq 'label');
+                    next if ($key eq 'labels');
+                    next if ($key eq 'value');
+                    next if ($key eq 'span');
+                    if ($key eq 'options') {
+                        for %.fieldsAttrs{$fieldName}{'options'} -> $option {
+                            $fieldOptions = $fieldOptions ~ '<option';
+                            if ($option eq %.fieldsAttrs{$fieldName}{'value'}) {
+                                $fieldOptions = $fieldOptions ~ ' selected="1"';
+                            }
+                            $fieldOptions = $fieldOptions ~ ' value="'.$option.'"';
+                            if (%.fieldsAttrs{$fieldName}{'labels'}){
+                                if (%.fieldsAttrs{$fieldName}{'labels'}{$option}){
+                                    $fieldOptions = $fieldOptions ~ '>' ~ %.fieldsAttrs{$fieldName}{'labels'}{$option}.'</option>';
+                                } else {
+                                    $fieldOptions = $fieldOptions ~ '>' ~ $option ~ '</option>';
+                                }
+                            } else {
+                                $fieldOptions = $fieldOptions ~ '>' ~ $option ~ '</option>';
+                            }
+                        }
+                    } else {
+                        $fieldHtml = $fieldHtml ~ $key ~ '="' ~ $value ~ '" ';
+                    }
+                }
+
+                $fieldHtml = '<select name='.$fieldName.'  '.$fieldHtml.'>';
+                if (%.fieldsAttrs{$fieldName}{'selectname'}) {
+                    $fieldHtml = $fieldHtml ~ '<option value="">' ~ %.fieldsAttrs{$fieldName}{'selectname'} ~ '</options>';
+                } else {
+                    $fieldHtml = $fieldHtml ~ '<option value="">Select an option</options>';
+                }
+                $fieldHtml = $fieldHtml ~ $fieldOptions ~ '</select>';
+            }
             default {
                 for %.fieldsAttrs{$fieldName}.kv -> $key, $value {
                     next if ($key eq 'id');
@@ -193,112 +301,6 @@ class Rakuwa::Form does Rakuwa::Common does Rakuwa::Conf {
                 $fieldHtml = '<input name="' ~ $fieldName ~ '" id="' ~ $fieldName ~ '" type="' ~ %.fieldsAttrs{$fieldName}{'type'} ~ '" ' ~ $fieldHtml ~ '/>';
             }
         }
-#    switch ($self->{fields}->{$field_name}->{type}) {
-#        case 'select' {
-#            my $field_options = '';
-#            foreach my $key(keys %{$self->{fields}->{$field_name}}){
-#                next if($key eq 'id');
-#                next if($key eq 'name');
-#                next if($key eq 'type');
-#                next if($key eq 'invalid_msg');
-#                next if($key eq 'help');
-#                next if($key eq 'override');
-#                next if($key eq 'selectname');
-#                next if($key eq 'label');
-#                next if($key eq 'labels');
-#                next if($key eq 'value');
-#                next if($key eq 'span');
-#                if($key eq 'options'){
-#                    foreach my $option(@{$self->{fields}->{$field_name}->{$key}}){
-#                        $field_options .= '<option';
-#                        $field_options .= (($option eq $self->{fields}->{$field_name}->{value}) ? ' selected="1"':'');
-#                        $field_options .= ' value="'.$option.'"';
-#                        if($self->{fields}->{$field_name}->{labels}){
-#                            if($self->{fields}->{$field_name}->{labels}->{$option}){
-#                                $field_options .= '>'.$self->{fields}->{$field_name}->{labels}->{$option}.'</option>';
-#                            }else{
-#                                $field_options .= '>'.$option.'</option>';
-#                            }
-#                        }else{
-#                            $field_options .= '>'.$option.'</option>';
-#                        }
-#                    }
-#                }else{
-#                    $field_html .= $key . '="' . $self->{fields}->{$field_name}->{$key} . '" ';
-#                }
-#            }
-#
-#            $field_html  = '<select name='.$field_name.'  '.$field_html.'>';
-#            $field_html .= ($self->{fields}->{$field_name}->{selectname} ? '<option value="">' . $self->{fields}->{$field_name}->{selectname} . '</options>':'<option value="">Select an option</options>');
-#            $field_html .= $field_options.'</select>';
-#        }
-#        case 'checkbox' {
-#            $self->{fields}->{$field_name}->{class} = 'form-check-input' if($self->{fields}->{$field_name}->{class} eq 'form-control form-control-sm');
-#            foreach my $key (keys %{$self->{fields}->{$field_name}}) {
-#                next if($key eq 'id');
-#                next if($key eq 'name');
-#                next if($key eq 'type');
-#                next if($key eq 'invalid_msg');
-#                next if($key eq 'help');
-#                next if($key eq 'override');
-#                next if($key eq 'label');
-#                next if($key eq 'span');
-#                if($key eq 'value'){
-#                    if($self->{fields}->{$field_name}->{$key}){
-#                        $field_html .= ' checked="1" ';
-#                    }
-#                }else{
-#                    $field_html .= $key . '="' . $self->{fields}->{$field_name}->{$key} . '" ';
-#                }
-#            }
-#            $field_html  = '<input name="' . $field_name . '" id="' . $field_name . '" type="' . $self->{fields}->{$field_name}->{type} . '" value="1" ' . $field_html .'/>';
-#            if($self->{fields}->{$field_name}->{check_label}){
-#                $field_html .= "\n".'<label class="form-check-label" for="' . $field_name . '">' . $self->{fields}->{$field_name}->{check_label} . '</label>';
-#            }else{
-#                $field_html .= "\n".'<label class="form-check-label" for="' . $field_name . '">' . $self->{fields}->{$field_name}->{label} . '</label>' if($self->{fields}->{$field_name}->{label});
-#            }
-#        }
-#        case 'textarea' {
-#            foreach my $key (keys %{$self->{fields}->{$field_name}}) {
-#                next if($key eq 'id');
-#                next if($key eq 'name');
-#                next if($key eq 'type');
-#                next if($key eq 'invalid_msg');
-#                next if($key eq 'help');
-#                next if($key eq 'override');
-#                next if($key eq 'label');
-#                next if($key eq 'value');
-#                next if($key eq 'span');
-#                $field_html .= $key . '="' . $self->{fields}->{$field_name}->{$key} . '" ';
-#            }
-#            $self->{fields}->{$field_name}->{value} = '' if(!$self->{fields}->{$field_name}->{value});
-#            my $value = $self->{fields}->{$field_name}->{value};
-#            $value =~ s/&/&amp;/g;
-#            $value =~ s/</&lt;/g;
-#            $value =~ s/>/&gt;/g;
-#            $field_html = '<textarea name="' . $field_name . '" id="' . $field_name . '" ' . $field_html .'>'.$value.'</textarea>';
-#        }
-#        case 'file' {
-#            $self->{fields}->{$field_name}->{class} = 'custom-file-input' if(($self->{fields}->{$field_name}->{class} eq 'form-control form-control-sm'));
-#            foreach my $key (keys %{$self->{fields}->{$field_name}}) {
-#                next if($key eq 'id');
-#                next if($key eq 'name');
-#                next if($key eq 'type');
-#                next if($key eq 'invalid_msg');
-#                next if($key eq 'help');
-#                next if($key eq 'override');
-#                next if($key eq 'label');
-#                next if($key eq 'value');
-#                next if($key eq 'span');
-#                $field_html .= $key . '="' . $self->{fields}->{$field_name}->{$key} . '" ';
-#            }
-#            $field_html = '<input name="' . $field_name . '" id="' . $field_name . '" type="' . $self->{fields}->{$field_name}->{type} . '" ' . $field_html .'/>' .
-#                '<label class="custom-file-label" for="' . $field_name . '"></label>';
-#
-#            $self->{params}->{enctype} ="multipart/form-data";
-#        }
-#    }
         return $fieldHtml;
     }
-
 }
