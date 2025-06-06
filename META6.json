@@ -1,52 +1,28 @@
 {
-  "name": "Rakuwa",
-  "description": "Raku Web Aplication Framework",
-  "version": "0.0.1",
-  "perl": "6.c",
   "authors": [
-    "David Romero"
+    "David Romero <romdav@gmail.com>"
   ],
-  "auth": "github:davidromero55",
+  "meta-version": "0",
+  "description": "Raku Web Aplication Framework",
+  "auth": "zef:rakuwa",
+  "raku": null,
+  "source-url": "https://github.com/davidromero55/Rakuwa",
   "depends": [
-    "Crust",
-    "Template6",
-    "DB::MySQL",
-    "JSON::Fast",
-    "Cookie::Baker",
-    "Digest::SHA",
-    "JSON::Tiny"
+    "Cro::HTTP"
   ],
-  "build-depends": [],
-  "test-depends": [],
-  "provides": {
-    "Rakuwa": "lib/Rakuwa.pm6",
-    "Rakuwa::API": "lib/Rakuwa/API.pm6",
-    "Rakuwa::Common": "lib/Rakuwa/Common.pm6",
-    "Rakuwa::Conf": "lib/Rakuwa/Conf.pm6",
-    "Rakuwa::Controller": "lib/Rakuwa/Controller.pm6",
-    "Rakuwa::File": "lib/Rakuwa/File.pm6",
-    "Rakuwa::Handler": "lib/Rakuwa/Handler.pm6",
-    "Rakuwa::Layout": "lib/Rakuwa/Layout.pm6",
-    "Rakuwa::List": "lib/Rakuwa/List.pm6",
-    "Rakuwa::Test::API": "lib/Rakuwa/Test/API.pm6",
-    "Rakuwa::Test::Controller": "lib/Rakuwa/Test/Controller.pm6",
-    "Rakuwa::Test::View": "lib/Rakuwa/Test/View.pm6",
-    "Rakuwa::View": "lib/Rakuwa/View.pm6"
+  "name": "Rakuwa",
+  "license": "Artistic-2.0",
+  "support": {
+    "source": ""
   },
   "resources": [
-    "p6w/rakuwa-basic.p6w"
+    
   ],
-  "license": "Artistic-2.0",
+  "provides": {
+    "Routes": "lib/Routes.rakumod"
+  },
   "tags": [
-    "Rakuwa",
-    "Web",
-    "Framework",
-    "API",
-    "perl6-module",
-    "perl6-application",
-    "Raku",
-    "perl6"
+    ""
   ],
-  "api": "1",
-  "source-url": "git://github.com/davidromero55/Rakuwa.git"
+  "version": "0.0.1"
 }

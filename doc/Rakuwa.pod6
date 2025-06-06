@@ -1,4 +1,0 @@
-=head1 Rakuwa, Raku Web Aplications
-
-This is a web application framework using Raku
- 

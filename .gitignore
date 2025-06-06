@@ -2,3 +2,5 @@ lib/.precomp
 lib/.precomp/*
 .idea/*
 *.iml
+lib/Users/*
+lib:
