@@ -1,28 +1,33 @@
 {
-  "authors": [
-    "David Romero <romdav@gmail.com>"
-  ],
-  "meta-version": "0",
-  "description": "Raku Web Aplication Framework",
-  "auth": "zef:rakuwa",
-  "raku": null,
-  "source-url": "https://github.com/davidromero55/Rakuwa",
-  "depends": [
-    "Cro::HTTP"
-  ],
-  "name": "Rakuwa",
-  "license": "Artistic-2.0",
-  "support": {
-    "source": ""
-  },
-  "resources": [
-    
-  ],
-  "provides": {
-    "Routes": "lib/Routes.rakumod"
-  },
-  "tags": [
-    ""
-  ],
-  "version": "0.0.1"
+    "name": "Rakuwa",
+    "description": "Raku Web Aplication Framework",
+    "version": "0.0.1",
+    "meta-version": "0",
+    "authors": [
+        "David Romero <romdav@gmail.com>"
+    ],
+    "auth": "zef:rakuwa",
+    "depends": [
+        "Cro::HTTP",
+        "Cro::HTTP::Log::File",
+        "Cro::HTTP::Server",
+        "Cro::HTTP::Router",
+        "Cro::WebApp::Template"
+    ],
+    "provides": {
+        "Routes": "lib/Routes.rakumod",
+        "Rakuwa": "lib/Rakuwa.rakumod",
+        "Rakuwa::Conf": "lib/Rakuwa/Conf.rakumod",
+        "Rakuwa::Layout": "lib/Rakuwa/Layout.rakumod",
+        "Rakuwa::View": "lib/Rakuwa/View.rakumod",
+        "Rakuwa::User::View": "lib/Rakuwa/User/View.rakumod"
+    },
+    "support": {
+        "source": ""
+    },
+    "license": "Artistic-2.0",
+    "tags": [
+        ""
+    ],
+    "source-url": "https://github.com/davidromero55/Rakuwa"
 }

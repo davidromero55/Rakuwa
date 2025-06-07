@@ -1,0 +1,11 @@
+<div class="row  justify-content-center">
+    <div id="loginbox" style="margin-top:100px;" class="col-12 col-sm-10 col-md-6 col-lg-4 col-xlg-3">
+        <div class="card">
+            <div class="card-header text-center"><h2><.page.title></h2></div>
+            <div style="padding-top:30px" class="card-body">
+                <.data.msg>
+                <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+            </div>
+        </div>
+    </div>
+</div>
