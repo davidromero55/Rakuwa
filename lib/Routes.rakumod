@@ -7,6 +7,10 @@ sub routes() is export {
         my $Rakuwa = Rakuwa.new();
         $Rakuwa.init();
 
+        get -> 'favicon.ico' {
+            # return a 404 for favicon.ico
+            content 'text/plain', "Not Found";
+        }
         get -> {
             content 'text/html', "<h1> Rakuwa </h1>";
         }
@@ -22,15 +26,19 @@ sub routes() is export {
             say "Rakuwa: Serving image: ", @path;
             static 'lib/assets', @path;
         }
-#        get -> 'templates', 'main', 'css',*@path {
-#            # Rakuwa css Resources
-#            resource 'templates/main/css', @path;
-#        }
-
+        get -> 'templates', *@path {
+            say "Rakuwa: Serving template resource: ", @path;
+            static 'lib/templates', @path;
+        }
         get -> *@path {
-            my $view = $Rakuwa.get-view(@path);
-            $view.render();
-            content 'text/html', $view.content;
+
+            if ($Rakuwa.validate-path(@path)) {
+                my $view = $Rakuwa.get-view(request, @path);
+                $view.render();
+                content 'text/html', $view.content;
+            } else {
+                not-found;
+            }
         }
 
 #        post -> 'User','Login' {

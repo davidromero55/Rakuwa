@@ -12,7 +12,8 @@
         "Cro::HTTP::Log::File",
         "Cro::HTTP::Server",
         "Cro::HTTP::Router",
-        "Cro::WebApp::Template"
+        "Cro::WebApp::Template",
+        "Template6"
     ],
     "provides": {
         "Routes": "lib/Routes.rakumod",
@@ -20,6 +21,7 @@
         "Rakuwa::Conf": "lib/Rakuwa/Conf.rakumod",
         "Rakuwa::Layout": "lib/Rakuwa/Layout.rakumod",
         "Rakuwa::View": "lib/Rakuwa/View.rakumod",
+        "Rakuwa::Form": "lib/Rakuwa/Form.rakumod",
         "Rakuwa::User::View": "lib/Rakuwa/User/View.rakumod"
     },
     "support": {

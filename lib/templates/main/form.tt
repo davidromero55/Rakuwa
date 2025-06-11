@@ -1,0 +1,31 @@
+<div class="row  justify-content-center">
+    <div id="loginbox" style="margin-top:100px;" class="col-12 col-sm-10 col-md-6 col-lg-4 col-xlg-3">
+        <div class="card">
+            <div class="card-header text-center"><h2><[% page %]</h2></div>
+            Form
+            <div style="padding-top:30px" class="card-body">
+            [% form_start %]
+                 <div class="row form-group form-row">
+                     [% for hidden-field in hidden-fields %]
+                         [% hidden-field.field %]
+                     [% end %]
+                    [% for field in fields %]
+                        <div class="col-md-12 mb-3">
+                            [% field.html_label %]
+                            [% field.field %]
+                            [% field.help %]
+                            [% field.error %]
+                        </div>
+                    [% end %]
+                </div>
+                <div class="row form-group form-row">
+                    <div class="col-md-12 mb-3 text-end">
+                        [% for submit in submits %]
+                            [% submit.submit %]
+                        [% end %]
+                    </div>
+                </div>
+            [% form_end %]
+        </div>
+    </div>
+</div>
