@@ -7,21 +7,13 @@ sub routes() is export {
         my $Rakuwa = Rakuwa.new();
         $Rakuwa.init();
 
+        get -> {
+            content 'text/html', "<h1> Rakuwa </h1>";
+        }
         get -> 'favicon.ico' {
             # return a 404 for favicon.ico
             content 'text/plain', "Not Found";
         }
-        get -> {
-            content 'text/html', "<h1> Rakuwa </h1>";
-        }
-#        get -> 'data', *@path {
-#            # User files and data
-#            static 'data', @path;
-#        }
-#        get -> 'vendor', *@path {
-#            # Vendor libraries and static content
-#            static 'vendor', @path;
-#        }
         get -> 'assets', *@path {
             say "Rakuwa: Serving image: ", @path;
             static 'lib/assets', @path;
@@ -30,6 +22,15 @@ sub routes() is export {
             say "Rakuwa: Serving template resource: ", @path;
             static 'lib/templates', @path;
         }
+
+#        get -> 'data', *@path {
+#            # User files and data
+#            static 'data', @path;
+#        }
+#        get -> 'vendor', *@path {
+#            # Vendor libraries and static content
+#            static 'vendor', @path;
+#        }
         get -> *@path {
 
             if ($Rakuwa.validate-path(@path)) {
