@@ -84,7 +84,7 @@ class Rakuwa {
     method get-view-name (@path --> Str) {
         # Get the view name from the path
         my $ViewName = "display_home";
-        if @path[0].defined {
+        with @path[0] {
             $ViewName = "display_" ~ @path[1].lc;
         }
         return $ViewName;
@@ -96,7 +96,7 @@ class Rakuwa {
         my $ModuleName = @path[0].tclc if @path[0].defined;
         my $ViewName = "display_home";
         my $ViewClass = "Rakuwa::{$ModuleName}::View";
-        if @path[1].defined {
+        with @path[0] {
             $ViewName = "display_" ~ @path[1].lc;
         }
 
@@ -137,7 +137,7 @@ class Rakuwa {
     method get_view_function_name (@path --> Str) {
         # Get the view function name from the path
         my $ViewName = "display_home";
-        if @path[0].defined {
+        with @path[0] {
             $ViewName = "display_" ~ @path[0].lc;
             $ViewName ~~ s:g/\W//; # Sanitize the function name
         }
@@ -147,7 +147,7 @@ class Rakuwa {
     method get_action_function_name (@path --> Str) {
         # Get the view function name from the path
         my $ViewName = "do_home";
-        if @path[0].defined {
+        with @path[0] {
             $ViewName = "do_" ~ @path[0].lc;
             $ViewName ~~ s:g/\W//; # Sanitize the function name
         }
