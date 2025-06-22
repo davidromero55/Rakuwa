@@ -1,6 +1,9 @@
 use Cro::HTTP::Router;
 use Rakuwa;
 
+use Rakuwa::User::Views;
+use Rakuwa::User::Actions;
+
 sub routes() is export {
     route {
 
@@ -23,22 +26,38 @@ sub routes() is export {
             static 'lib/templates', @path;
         }
 
-#        get -> 'data', *@path {
-#            # User files and data
-#            static 'data', @path;
-#        }
-#        get -> 'vendor', *@path {
-#            # Vendor libraries and static content
-#            static 'vendor', @path;
-#        }
-        get -> *@path {
-
-            if ($Rakuwa.validate-path(@path)) {
-                my $view = $Rakuwa.get-view(request, @path);
+        get -> 'user',*@path {
+            my $function = $Rakuwa.get_view_function_name(@path);
+            my $view = Rakuwa::User::Views.new(:request(request), :@path);
+            if $view.can($function) {
+                $view."$function"();
                 $view.render();
                 content 'text/html', $view.content;
-            } else {
-                not-found;
+            }else{
+                not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
+            }
+        }
+
+        post -> 'user',*@path {
+            my $function = $Rakuwa.get_action_function_name(@path);
+            my $action = Rakuwa::User::Actions.new(:request(request), :@path);
+            if $action.can($function) {
+                $action."$function"();
+                if ($action.redirect.chars > 0) {
+                    redirect $action.redirect;
+                }
+
+                my $view_function = $Rakuwa.get_view_function_name(@path);
+                my $view = Rakuwa::User::Views.new(:request(request), :@path);
+                if $view.can($view_function) {
+                    $view."$view_function"();
+                    $view.render();
+                    content 'text/html', $view.content;
+                }else{
+                    not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
+                }
+            }else {
+                not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
             }
         }
 

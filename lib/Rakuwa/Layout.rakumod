@@ -1,11 +1,15 @@
 use Rakuwa::Conf;
-use Cro::WebApp::Template;
+use Template6;
 
 class Rakuwa::Layout {
     has $.template is rw = "layout.crotmp";
 
     method render ($view --> Str) {
-        template-location $conf<Template><template_dir>;
-        return render-template $.template, {:page($view.page), :content($view.content)};
+        my $TT = Template6.new();
+        $TT.add-path($conf<Template><template_dir> ~ '/');
+        return $TT.process("layout",
+                :page($view.page),
+                :content($view.content),
+                );
     }
 }

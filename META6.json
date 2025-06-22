@@ -21,8 +21,10 @@
         "Rakuwa::Conf": "lib/Rakuwa/Conf.rakumod",
         "Rakuwa::Layout": "lib/Rakuwa/Layout.rakumod",
         "Rakuwa::View": "lib/Rakuwa/View.rakumod",
+        "Rakuwa::Action": "lib/Rakuwa/Action.rakumod",
         "Rakuwa::Form": "lib/Rakuwa/Form.rakumod",
-        "Rakuwa::User::View": "lib/Rakuwa/User/View.rakumod"
+        "Rakuwa::User::Views": "lib/Rakuwa/User/Views.rakumod",
+        "Rakuwa::User::Actions": "lib/Rakuwa/User/Actions.rakumod"
     },
     "support": {
         "source": ""

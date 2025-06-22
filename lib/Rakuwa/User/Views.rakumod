@@ -3,7 +3,7 @@ use Rakuwa::View;
 use Rakuwa::Form;
 use Cro::WebApp::Template;
 
-class Rakuwa::User::View is Rakuwa::View {
+class Rakuwa::User::Views is Rakuwa::View {
     has %.page is rw = {
         :title('User View'),
         :description(''),

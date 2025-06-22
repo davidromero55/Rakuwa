@@ -1,6 +1,6 @@
 use Rakuwa::Conf;
 use Rakuwa::Layout;
-use Cro::WebApp::Template;
+use Template6;
 
 class Rakuwa::View {
     has %.page is rw = {
@@ -25,8 +25,13 @@ class Rakuwa::View {
 
         if $.status == 0 {
             $.status = 200; # Default status code
-            template-location $conf<Template><template_dir>;
-            $.content = render-template $.template, {data => $.data, page => $.page, debug => $conf<App><debug>};
+
+            my $TT = Template6.new();
+            $TT.add-path($conf<Template><template_dir> ~ '/');
+            $.content = $TT.process(.template,
+                    :data($.data),
+                    :page($.page)
+                    );
         }
 
         if $.status == 200 {

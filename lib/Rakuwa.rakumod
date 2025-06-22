@@ -1,6 +1,7 @@
 use Rakuwa::Conf;
 use Rakuwa::View;
 use Rakuwa::Layout;
+use Template6;
 
 class Rakuwa {
     has %.controller is rw;
@@ -70,19 +71,23 @@ class Rakuwa {
       say "Finish All";
     }
 
-    method error-view ($error, @path --> Rakuwa::View) {
-        my $view = Rakuwa::View.new;
+    method not-found ($error --> Str) {
+        my $TT = Template6.new();
+        $TT.add-path($conf<Template><template_dir> ~ '/');
+        my $content = $TT.process("404-view",
+                :$error,
+                );
 
-        say "Title: " ~ $view.page<title>;
-        $view.page<title> = "Error";
+        return $content;
+    }
 
-        $view.status = 404;
-        $view.template = "404-view.crotmp";
-        $view.data = {
-            :$error,
-            :path(@path.join('/'))
-        };
-        return $view;
+    method get-view-name (@path --> Str) {
+        # Get the view name from the path
+        my $ViewName = "display_home";
+        if @path[0].defined {
+            $ViewName = "display_" ~ @path[1].lc;
+        }
+        return $ViewName;
     }
 
     method get-view ($request, @path --> Rakuwa::View) {
@@ -127,6 +132,26 @@ class Rakuwa {
 
     method get-main-layout (--> Rakuwa::Layout) {
         return Rakuwa::Layout.new;
+    }
+
+    method get_view_function_name (@path --> Str) {
+        # Get the view function name from the path
+        my $ViewName = "display_home";
+        if @path[0].defined {
+            $ViewName = "display_" ~ @path[0].lc;
+            $ViewName ~~ s:g/\W//; # Sanitize the function name
+        }
+        return $ViewName;
+    }
+
+    method get_action_function_name (@path --> Str) {
+        # Get the view function name from the path
+        my $ViewName = "do_home";
+        if @path[0].defined {
+            $ViewName = "do_" ~ @path[0].lc;
+            $ViewName ~~ s:g/\W//; # Sanitize the function name
+        }
+        return $ViewName;
     }
 
 }
