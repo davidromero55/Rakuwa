@@ -1,10 +1,12 @@
 use Rakuwa::Conf;
 use Rakuwa::Layout;
 use Template6;
+use Rakuwa::SessionObject;
 
 class Rakuwa::View {
+    has %.conf is rw = Rakuwa::Conf.new().get-all();
     has %.page is rw = {
-        :title($conf<App><name>),
+        :title(%!conf<App><name>),
         :description(''),
         :keywords('')
     }
@@ -18,6 +20,7 @@ class Rakuwa::View {
     };
     has @.path is rw = ();
     has $.request is rw;
+    has Rakuwa::SessionObject $.session is rw = $!request.auth; # Session object from the request
 
     method render (%vars={}) {
         # Prepare the view for rendering
@@ -26,11 +29,13 @@ class Rakuwa::View {
         if $.status == 0 {
             $.status = 200; # Default status code
 
+
             my $TT = Template6.new();
-            $TT.add-path($conf<Template><template_dir> ~ '/');
+            $TT.add-path(%.conf<Template><template_dir> ~ '/');
             $.content = $TT.process(.template,
                     :data($.data),
-                    :page($.page)
+                    :page($.page),
+                    :msg(self.get-msgs),
                     );
         }
 
@@ -46,5 +51,23 @@ class Rakuwa::View {
         # Prepare the view for rendering
         # Override this method in subclasses if needed
     }
+
+    method add-msg(Str $type, Str $message, :$element = '') {
+        $!request.auth.add-msg($type,$message, :$element);
+    }
+
+    method get-msgs(--> Str) {
+        my @msgs = $!request.auth.get-msgs;
+        my $html-alerts = '';
+        for @msgs -> %msg {
+            # Create HTML alert messages
+            $html-alerts ~= "<div class='alert alert-{%msg<type>}' role='alert'>";
+            $html-alerts ~= "<strong>{%msg<message>}</strong>";
+            $html-alerts ~= "</div>";
+        }
+        return $html-alerts;
+    }
+
+
 
 }

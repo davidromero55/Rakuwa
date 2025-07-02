@@ -13,7 +13,8 @@
         "Cro::HTTP::Server",
         "Cro::HTTP::Router",
         "Cro::WebApp::Template",
-        "Template6"
+        "Template6",
+        "DB::MySQL"
     ],
     "provides": {
         "Routes": "lib/Routes.rakumod",

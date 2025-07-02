@@ -1,7 +1,8 @@
 use Rakuwa::Conf;
 use Rakuwa::View;
 use Rakuwa::Form;
-use Cro::WebApp::Template;
+use DB::MySQL;
+use Rakuwa::DB;
 
 class Rakuwa::User::Views is Rakuwa::View {
     has %.page is rw = {
@@ -33,7 +34,6 @@ class Rakuwa::User::Views is Rakuwa::View {
         $form.init;
         $form.field('email', {:type('email'), :placeholder('Email'), :required, :help('Enter your email address')});
         $form.field('password', {:type('password'), :placeholder('Password'), :required});
-
         $form.render;
         $.status = $form.status;
         $.content = $form.content;

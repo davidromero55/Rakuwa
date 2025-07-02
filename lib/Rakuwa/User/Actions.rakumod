@@ -3,19 +3,22 @@ use Rakuwa::Action;
 
 class Rakuwa::User::Actions is Rakuwa::Action {
 
-    method do_login () {
-        my $email = $.request.query-value("email");
-        my $password = $.request.query-value("password");
+    method do_login (%params) {
+        my $email = %params<email>;
+        my $password = %params<password>;
 
-        say "Rakuwa: Attempting to log in user with email: $email";
-        # Here you would typically validate the email and password
-        # against a database or other user store.
-        if $email && $password {
-            $.status = 'success';
-            $.data<msg> = "Login successful for user: $email";
-            $.redirect = '/user/home';  # Redirect to the user home page
+
+        my %user = $.db.query("SELECT * FROM users WHERE email = ?", $email).hash;
+        if %user {
+            # Here you would normally check the password, but for simplicity, we assume it's correct
+            self.add-msg('success', "Welcome back, {%user<name>}!");
+            $.session.user-id = %user<user_id>;
+            $.session.user-name = %user<name>;
+            $.session.user-email = %user<email>;
+            $.redirect = '/dashboard';  # Redirect to the user home page
         } else {
             $.status = 'error';
+            self.add-msg('warning', "Invalid email or password.");
             $.data<msg> = "Invalid email or password.";
         }
     }

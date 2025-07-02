@@ -1,6 +1,7 @@
 use Cro::HTTP::Router;
 use Rakuwa;
-
+use Rakuwa::Session;
+use Rakuwa::DB;
 use Rakuwa::User::Views;
 use Rakuwa::User::Actions;
 
@@ -10,6 +11,8 @@ sub routes() is export {
         my $Rakuwa = Rakuwa.new();
         $Rakuwa.init();
 
+        before get-session();
+
         get -> {
             content 'text/html', "<h1> Rakuwa </h1>";
         }
@@ -18,11 +21,9 @@ sub routes() is export {
             content 'text/plain', "Not Found";
         }
         get -> 'assets', *@path {
-            say "Rakuwa: Serving image: ", @path;
             static 'lib/assets', @path;
         }
         get -> 'templates', *@path {
-            say "Rakuwa: Serving template resource: ", @path;
             static 'lib/templates', @path;
         }
 
@@ -39,25 +40,29 @@ sub routes() is export {
         }
 
         post -> 'user',*@path {
-            my $function = $Rakuwa.get_action_function_name(@path);
-            my $action = Rakuwa::User::Actions.new(:request(request), :@path);
-            if $action.can($function) {
-                $action."$function"();
-                if ($action.redirect.chars > 0) {
-                    redirect $action.redirect;
-                }
 
-                my $view_function = $Rakuwa.get_view_function_name(@path);
-                my $view = Rakuwa::User::Views.new(:request(request), :@path);
-                if $view.can($view_function) {
-                    $view."$view_function"();
-                    $view.render();
-                    content 'text/html', $view.content;
-                }else{
+            request-body -> (*%params) {
+                my $function = $Rakuwa.get_action_function_name(@path);
+                my $action = Rakuwa::User::Actions.new(:request(request), :@path);
+                if $action.can($function) {
+                    $action."$function"(%params);
+                    if ($action.redirect.chars > 0) {
+                        redirect $action.redirect;
+                    }
+
+
+                    my $view_function = $Rakuwa.get_view_function_name(@path);
+                    my $view = Rakuwa::User::Views.new(:request(request), :@path);
+                    if $view.can($view_function) {
+                        $view."$view_function"();
+                        $view.render();
+                        content 'text/html', $view.content;
+                    }else{
+                        not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
+                    }
+                }else {
                     not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
                 }
-            }else {
-                not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
             }
         }
 

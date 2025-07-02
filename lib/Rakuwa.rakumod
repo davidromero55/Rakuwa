@@ -1,6 +1,7 @@
 use Rakuwa::Conf;
 use Rakuwa::View;
 use Rakuwa::Layout;
+#use Rakuwa::DB;
 use Template6;
 
 class Rakuwa {
@@ -8,12 +9,16 @@ class Rakuwa {
     has %.page is rw;
     has Int $.status is rw;
     has %.headers is rw;
+    has %.conf is rw = Rakuwa::Conf.new().get-all();
+    has $.rdb is rw;
     #    has Rakuwa::Session $.session is rw;
     #    has DB::MySQL $.db is rw;
 
     method init () {
         $.status  = 200;
         %.headers{'Content-Type'} = 'text/html';
+
+    #    init-db();
     #        $.params = $.request.parameters;
     #       self.prepare_controller;
 
@@ -73,7 +78,7 @@ class Rakuwa {
 
     method not-found ($error --> Str) {
         my $TT = Template6.new();
-        $TT.add-path($conf<Template><template_dir> ~ '/');
+        $TT.add-path($.conf<Template><template_dir> ~ '/');
         my $content = $TT.process("404-view",
                 :$error,
                 );
