@@ -6,15 +6,17 @@
     "authors": [
         "David Romero <romdav@gmail.com>"
     ],
-    "auth": "zef:rakuwa",
+    "auth": "zef:davidromero55",
     "depends": [
         "Cro::HTTP",
         "Cro::HTTP::Log::File",
         "Cro::HTTP::Server",
         "Cro::HTTP::Router",
-        "Cro::WebApp::Template",
         "Template6",
-        "DB::MySQL"
+        "DB::MySQL",
+        "Cro::HTTP::Auth",
+        "JSON::Class",
+        "Cro::HTTP::Session::MySQL"
     ],
     "provides": {
         "Routes": "lib/Routes.rakumod",

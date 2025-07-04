@@ -28,11 +28,19 @@
             </li>
           </ul>
           <ul class="nav d-flex">
+            [% IF userid > 0 %]
+              <li class="nav-item">
+                  <a class="nav-link" href="/user/account" title="Login" alt="Login">
+                      <span class="material-symbols-outlined">account_circle</span> My Account
+                  </a>
+              </li>
+            [% ELSE %]
             <li class="nav-item">
               <a class="nav-link" href="/user/login" title="Login" alt="Login">
                 <span class="material-symbols-outlined">account_circle</span> Log in
               </a>
             </li>
+            [% END %]
           </ul>
         </div>
     </div>

@@ -31,3 +31,6 @@ class Rakuwa::SessionObject does Cro::HTTP::Auth does JSON::Class {
     }
 
 }
+
+subset LoggedIn of Rakuwa::SessionObject where .is-logged-in;
+

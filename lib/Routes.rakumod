@@ -4,6 +4,7 @@ use Rakuwa::Session;
 use Rakuwa::DB;
 use Rakuwa::User::Views;
 use Rakuwa::User::Actions;
+use Rakuwa::Dashboard::Routes;
 
 sub routes() is export {
     route {
@@ -27,6 +28,8 @@ sub routes() is export {
             static 'lib/templates', @path;
         }
 
+        include dashboard-routes($Rakuwa);
+
         get -> 'user',*@path {
             my $function = $Rakuwa.get_view_function_name(@path);
             my $view = Rakuwa::User::Views.new(:request(request), :@path);
@@ -47,28 +50,26 @@ sub routes() is export {
                 if $action.can($function) {
                     $action."$function"(%params);
                     if ($action.redirect.chars > 0) {
-                        redirect $action.redirect;
+                        redirect :see-other, $action.redirect;
+                    }else {
+                        my $view_function = $Rakuwa.get_view_function_name(@path);
+                        my $view = Rakuwa::User::Views.new(:request(request), :@path);
+                        if $view.can($view_function) {
+                            $view."$view_function"();
+                            $view.render();
+                            content 'text/html', $view.content;
+                        }else {
+                            not-found 'text/html', $Rakuwa
+                            .not-found("View does not have a { $function } method.");
+                        }
                     }
 
-
-                    my $view_function = $Rakuwa.get_view_function_name(@path);
-                    my $view = Rakuwa::User::Views.new(:request(request), :@path);
-                    if $view.can($view_function) {
-                        $view."$view_function"();
-                        $view.render();
-                        content 'text/html', $view.content;
-                    }else{
-                        not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
-                    }
                 }else {
                     not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
                 }
             }
         }
 
-#        post -> 'User','Login' {
-#            content 'text/html', "<h1> Rakuwa </h1>";
-#        }
     }
 
 }

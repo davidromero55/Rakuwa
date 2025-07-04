@@ -7,7 +7,8 @@ class Rakuwa::User::Actions is Rakuwa::Action {
         my $email = %params<email>;
         my $password = %params<password>;
 
-
+        # Todo: Validate email and password format
+        # Todo: Check if the user exists in the database using password
         my %user = $.db.query("SELECT * FROM users WHERE email = ?", $email).hash;
         if %user {
             # Here you would normally check the password, but for simplicity, we assume it's correct

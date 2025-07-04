@@ -20,11 +20,13 @@ class Rakuwa::View {
     };
     has @.path is rw = ();
     has $.request is rw;
-    has Rakuwa::SessionObject $.session is rw = $!request.auth; # Session object from the request
+    has Rakuwa::SessionObject $.session is rw = $!request.auth;
 
     method render (%vars={}) {
         # Prepare the view for rendering
         self.prepare_for_render(%vars);
+
+        say "Rendering view: {self.template}";
 
         if $.status == 0 {
             $.status = 200; # Default status code
@@ -32,7 +34,7 @@ class Rakuwa::View {
 
             my $TT = Template6.new();
             $TT.add-path(%.conf<Template><template_dir> ~ '/');
-            $.content = $TT.process(.template,
+            $.content = $TT.process(self.template,
                     :data($.data),
                     :page($.page),
                     :msg(self.get-msgs),
@@ -40,7 +42,7 @@ class Rakuwa::View {
         }
 
         if $.status == 200 {
-            my $layout = Rakuwa::Layout.new;
+            my $layout = Rakuwa::Layout.new(:$.session);
             $.content = $layout.render(self);
         }
     }
