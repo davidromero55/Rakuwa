@@ -19,7 +19,7 @@ class Rakuwa::User::Views is Rakuwa::View {
     }
 
     method display_login () {
-        $.template     = 'users/display-login.crotmp';
+        $.template     = 'users/display-login';
         $.page<title> = 'User Login';
         $.data<message> = 'Welcome to the User Home Page';
         my $form = Rakuwa::Form.new(

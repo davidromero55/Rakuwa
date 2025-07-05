@@ -14,8 +14,7 @@ class Rakuwa::Layout {
         return $TT.process("layout",
                 :page($view.page),
                 :content($view.content),
-                :userid($.session.user-id),
-                #:user-id($.session.user-id),
+                :user-id($.session.user-id),
                 #:user-name($.session.user-name),
 
                 );

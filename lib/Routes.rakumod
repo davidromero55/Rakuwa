@@ -4,7 +4,10 @@ use Rakuwa::Session;
 use Rakuwa::DB;
 use Rakuwa::User::Views;
 use Rakuwa::User::Actions;
+
+# Rakuwa Routes
 use Rakuwa::Dashboard::Routes;
+use Rakuwa::User::Routes;
 
 sub routes() is export {
     route {
@@ -30,45 +33,8 @@ sub routes() is export {
 
         include dashboard-routes($Rakuwa);
 
-        get -> 'user',*@path {
-            my $function = $Rakuwa.get_view_function_name(@path);
-            my $view = Rakuwa::User::Views.new(:request(request), :@path);
-            if $view.can($function) {
-                $view."$function"();
-                $view.render();
-                content 'text/html', $view.content;
-            }else{
-                not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
-            }
-        }
+        include user-routes($Rakuwa);
 
-        post -> 'user',*@path {
-
-            request-body -> (*%params) {
-                my $function = $Rakuwa.get_action_function_name(@path);
-                my $action = Rakuwa::User::Actions.new(:request(request), :@path);
-                if $action.can($function) {
-                    $action."$function"(%params);
-                    if ($action.redirect.chars > 0) {
-                        redirect :see-other, $action.redirect;
-                    }else {
-                        my $view_function = $Rakuwa.get_view_function_name(@path);
-                        my $view = Rakuwa::User::Views.new(:request(request), :@path);
-                        if $view.can($view_function) {
-                            $view."$view_function"();
-                            $view.render();
-                            content 'text/html', $view.content;
-                        }else {
-                            not-found 'text/html', $Rakuwa
-                            .not-found("View does not have a { $function } method.");
-                        }
-                    }
-
-                }else {
-                    not-found 'text/html', $Rakuwa.not-found("View does not have a {$function} method.");
-                }
-            }
-        }
 
     }
 

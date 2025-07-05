@@ -13,7 +13,13 @@ class Rakuwa::SessionObject does Cro::HTTP::Auth does JSON::Class {
             return True if $_ > 0;
         }
         return False;
-     }
+    }
+
+    method logout(--> Nil) {
+        $.user-id = 0;
+        $.user-name = '';
+        $.user-email = '';
+    }
 
     method add-msg(Str $type, Str $message, :$element = '') {
         my %msg = %(
