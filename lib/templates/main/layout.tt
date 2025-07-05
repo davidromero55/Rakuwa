@@ -38,7 +38,7 @@
                         <span class="material-symbols-outlined me-1">account_circle</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
-                        <li><a class="dropdown-item" href="/user/account"><span class="material-symbols-outlined">id_card</span> My Account</a></li>
+                        <li><a class="dropdown-item" href="/user"><span class="material-symbols-outlined">id_card</span> My Account</a></li>
                         <li><a class="dropdown-item" href="/user/logout"><span class="material-symbols-outlined">logout</span> Logout</a></li>
                     </ul>
                 </li>

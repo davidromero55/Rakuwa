@@ -1,7 +1,7 @@
 <div class="row  justify-content-center">
     <div id="loginbox" style="margin-top:100px;" class="col-12 col-sm-10 col-md-6 col-lg-4 col-xlg-3">
         <div class="card">
-            <div class="card-header text-center"><h2><[% page.title %]</h2></div>
+            [% IF title %]<div class="card-header text-center"><h3>[% title %]</h3></div>[% END %]
             <div style="padding-top:30px" class="card-body">
             [% form_start %]
                  <div class="row form-group form-row">
@@ -12,6 +12,7 @@
                         <div class="col-md-12 mb-3">
                             [% field.html_label %]
                             [% field.field %]
+                            [% field.message %]
                             [% field.help %]
                             [% field.error %]
                         </div>

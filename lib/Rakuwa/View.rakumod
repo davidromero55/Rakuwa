@@ -15,8 +15,6 @@ class Rakuwa::View {
     has $.content is rw = "";
     has $.template is rw = ""; # Default template
     has %.data is rw = {
-        :msg(''),
-        :vars({}),
     };
     has @.path is rw = ();
     has $.request is rw;
@@ -26,17 +24,13 @@ class Rakuwa::View {
         # Prepare the view for rendering
         self.prepare_for_render(%vars);
 
-        say "Rendering view: {self.template}";
-
         if $.status == 0 {
             $.status = 200; # Default status code
-
-
             my $TT = Template6.new();
             $TT.add-path(%.conf<Template><template_dir> ~ '/');
             $.content = $TT.process(self.template,
-                    :data($.data),
-                    :page($.page),
+                    :data(%.data),
+                    :page(%.page),
                     :msg(self.get-msgs),
                     );
         }

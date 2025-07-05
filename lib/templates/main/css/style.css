@@ -14,3 +14,12 @@ body {
 .material-symbols-outlined {
     font-size: 1.5em; vertical-align: middle;
 }
+
+input[readonly] {
+    background-color: #EEEEEE;
+    border-color: #ced4da;
+}
+
+.form-group .badge {
+    font-weight: normal;
+}

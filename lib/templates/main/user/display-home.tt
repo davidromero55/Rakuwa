@@ -1,0 +1,27 @@
+<div class="row  justify-content-center">
+    <div id="account" class="col-md-4">
+        <div class="card">
+            <div class="card-header text-center"><h2>[% page.title %]</h2></div>
+            <div class="card-body">
+                [% msg %]
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <span class="material-symbols-outlined" style="font-size:100px;">account_circle</span>
+                    </div>
+                    <div class="col-12 text-center card-text">
+                        <h4>[% data.user.name %]</h4>
+                        <p>Email: [% data.user.email %]</p>
+                        <p>Added on: [% data.user.created_on %]</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-12 text-end">
+                        <a href="/user/updatepassword" class="card-link">Update password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

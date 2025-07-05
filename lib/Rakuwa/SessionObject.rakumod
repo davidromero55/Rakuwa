@@ -36,6 +36,23 @@ class Rakuwa::SessionObject does Cro::HTTP::Auth does JSON::Class {
         return @current-messages;
     }
 
+    method get-msgs-for-elements(){
+        my %msgs-by-element;
+        my @my-messages = self.get-msgs;
+        my @non-element-messages;
+        for @my-messages -> %msg {
+            my $element = %msg<element>;
+            if $element {
+                %msgs-by-element{$element} //= [];
+                %msgs-by-element{$element}.push(%msg);
+            }else {
+                self.add-msg(%msg<type>, %msg<message>);
+            }
+        }
+
+        return %msgs-by-element;
+    }
+
 }
 
 subset LoggedIn of Rakuwa::SessionObject where .is-logged-in;

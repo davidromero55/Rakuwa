@@ -4,6 +4,7 @@ use Template6;
 
 class Rakuwa::Form is Rakuwa::View {
     has $.id is rw = "";
+    has Str $.title is rw = '';
     has $.name is rw = "";
     has $.method is rw = 'post';
     has $.action is rw = '';
@@ -21,6 +22,8 @@ class Rakuwa::Form is Rakuwa::View {
 
     has $.form_start is rw = '';
     has $.form_end is rw = '</form>';
+
+    has %.field_message;
 
     method init () {
 
@@ -64,6 +67,24 @@ class Rakuwa::Form is Rakuwa::View {
         # Control fields
         self.field('_submit', {:type('hidden'), :value('')});
         self.field('_submitted', {:type('hidden'), :value($.id)});
+
+        # Get errors messages if any
+        %.field_message = {};
+        my %messages_arrays = $.session.get-msgs-for-elements();
+        for %messages_arrays.keys -> $field_name {
+            say "Field: $field_name";
+            my @messages = %messages_arrays{$field_name};
+            say "Errors: " ~ @messages.elems;
+            my $message = '';
+            for @messages -> @message {
+                for @message -> %message {
+                    say "Error: " ~ %message<message>;
+                    $message ~= %message<message> ~ ' ';
+                }
+            }
+            %.field_message{$field_name} = $message;
+        }
+
     }
 
     method field (Str $field_name, %attrs) {
@@ -168,6 +189,10 @@ class Rakuwa::Form is Rakuwa::View {
             %.fields{$field_name}{'error'} = '<div id="' ~ $field_name ~ 'Error" class="invalid-feedback">' ~ %.fields{$field_name}{'error'} ~ '</div>';
         }
 
+        %.fields{$field_name}{'message'} = '';
+        if (%.field_message{$field_name}) {
+            %.fields{$field_name}{'message'} = '<span class="badge rounded-pill text-bg-warning">' ~ %.field_message{$field_name} ~ '</span>';
+        }
 
         %.fields{$field_name}{'field'} = self.get-field($field_name);
     }
@@ -191,6 +216,7 @@ class Rakuwa::Form is Rakuwa::View {
             next if $key eq 'html_label';
             next if $key eq 'help';
             next if $key eq 'error';
+            next if $key eq 'message';
             if (%field{$key}:exists) {
                 $field_html ~= "$key=\"" ~ %field{$key} ~ "\" ";
             }
@@ -202,6 +228,7 @@ class Rakuwa::Form is Rakuwa::View {
     method create_label ($field_name --> Str) {
         my $name = $field_name;
         $name .= subst(/_/, ' ', :g);
+        $name .= subst(/\-/, ' ', :g);
         return $name.tclc;
     }
 
@@ -249,12 +276,12 @@ class Rakuwa::Form is Rakuwa::View {
         }
 
         $.content = $TT.process("form",
+                :title($.title),
                 :form_start($.form_start),
                 :form_end($.form_end),
                 :fields(@fields-array),
                 :@hidden-fields,
                 :submits(@submits-array),
-                :page($.page),
                 :msg(self.get-msgs),
                 :debug(%.conf<App><debug>));
     }
