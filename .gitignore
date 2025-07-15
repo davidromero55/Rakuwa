@@ -3,6 +3,7 @@ lib/.precomp/*
 .idea/*
 *.iml
 lib/Users/*
+lib/data/*
 lib:
 .precomp
 .DS_Store

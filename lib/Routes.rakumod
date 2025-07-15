@@ -25,7 +25,10 @@ sub routes() is export {
             content 'text/plain', "Not Found";
         }
         get -> 'assets', *@path {
-            static 'lib/assets', @path;
+                static 'lib/assets', @path;
+        }
+        get -> 'data', *@path {
+                static 'lib/data', @path;
         }
         get -> 'templates', *@path {
             static 'lib/templates', @path;

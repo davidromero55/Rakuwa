@@ -6,7 +6,11 @@
                 [% msg %]
                 <div class="row">
                     <div class="col-12 text-center">
+                        [% IF data.user.picture %]
+                        <img src="/data/users/[% data.user.picture %]" class="img-fluid rounded-circle" alt="User Picture" style="max-width: 150px; max-height: 150px;">
+                        [% ELSE %]
                         <span class="material-symbols-outlined" style="font-size:100px;">account_circle</span>
+                        [% END %]
                     </div>
                     <div class="col-12 text-center card-text">
                         <h4>[% data.user.name %]</h4>
@@ -18,6 +22,7 @@
             <div class="card-footer">
                 <div class="row">
                     <div class="col-12 text-end">
+                        <a href="/user/edit" class="card-link">Edit</a>
                         <a href="/user/updatepassword" class="card-link">Update password</a>
                     </div>
                 </div>

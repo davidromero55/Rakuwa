@@ -23,6 +23,9 @@ class Rakuwa::User::Actions is Rakuwa::Action {
             $.session.user-id = %user<user_id>;
             $.session.user-name = %user<name>;
             $.session.user-email = %user<email>;
+            $.session.is-admin = %user<is_admin> // False;  # Default to False if not set
+            $.session.role = %user<role> // 'guest';  # Default to 'guest' if not set
+            $.session.user-picture = %user<picture> // '';  # Default to empty string if not set
             $.redirect = '/dashboard';  # Redirect to the user home page
         } else {
             $.status = 'error';
@@ -67,5 +70,34 @@ class Rakuwa::User::Actions is Rakuwa::Action {
 
 
         $.redirect = '/user';  # Redirect to the home page
+    }
+
+    method do_edit (%params) {
+        my $name = %params<name>.body-blob.decode('utf-8');
+        my $picture = %params<picture>;
+        my $file_name = self.save-image($picture,'users');
+
+        my $user_id = $.session.user-id;
+        try {
+            say "name: ", $name;
+
+            $.db.query("UPDATE users SET name = ? WHERE user_id = ?", $name, $user_id);
+            $.session.user-name = $name;
+
+            if $file_name {
+                $.db.query("UPDATE users SET picture = ? WHERE user_id = ?", $file_name, $user_id);
+                $.session.user-picture = $file_name;
+            }
+
+            $.session.add-msg('success', "User details updated successfully.");
+            $.status = 'success';
+            $.redirect = '/user';  # Redirect to the home page
+            CATCH {
+                default {
+                    $.status = 'error';
+                    $.session.add-msg('danger', .^name);
+                }
+            }
+        }
     }
 }

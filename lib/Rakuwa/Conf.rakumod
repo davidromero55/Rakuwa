@@ -15,6 +15,8 @@ class Rakuwa::Conf {
 
     has Str $.secret_key is rw = 'tu-clave-secreta-muy-larga-y-segura';
     has Str $.csrf_token is rw = '';
+    has Str $.data_directory is rw = 'lib/data/';
+
 
     %conf<DB> = {
         :host('localhost'),
@@ -33,6 +35,7 @@ class Rakuwa::Conf {
         :httponly,
         :path('/'),
     };
+
 
     # Templates
     %conf<Template> = {

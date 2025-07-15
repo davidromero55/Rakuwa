@@ -36,25 +36,46 @@ class Rakuwa::User::Views is Rakuwa::View {
     }
 
     method display_updatepassword () {
-        %.page<title> = 'Update Password';
-        my $form = Rakuwa::Form.new(
-                :title('Update Password'),
-                :request($.request),
-                :path(@.path),
-                :name('updatepassword-form'),
-                :action('/user/updatepassword'),
-                :method('POST'),
-                :fields-names(["name", "current-password", "new-password", "confirm-new-password"]),
-                :submits-names(["Update Password"])
-                );
-        $form.init;
-        $form.field('name', {:type('text'), :placeholder('Name'), :readonly, :value($.session.user-name)});
-        $form.field('current-password', {:type('password'), :placeholder('Current Password'), :required, :help('Enter your current password')});
-        $form.field('new-password', {:type('password'), :placeholder('New Password'), :required, :help('Enter your new password')});
-        $form.field('confirm-new-password', {:type('password'), :placeholder('Confirm New Password'), :required, :help('Re-enter your new password')});
-        $form.render;
-        $.status = $form.status;
-        $.content = $form.content;
+            %.page<title> = 'Update Password';
+            my $form = Rakuwa::Form.new(
+                    :title('Update Password'),
+                    :request($.request),
+                    :path(@.path),
+                    :name('updatepassword-form'),
+                    :action('/user/updatepassword'),
+                    :method('POST'),
+                    :fields-names(["name", "current-password", "new-password", "confirm-new-password"]),
+                    :submits-names(["Update Password"])
+                    );
+            $form.init;
+            $form.field('name', {:type('text'), :placeholder('Name'), :readonly, :value($.session.user-name)});
+            $form.field('current-password', {:type('password'), :placeholder('Current Password'), :required, :help('Enter your current password')});
+            $form.field('new-password', {:type('password'), :placeholder('New Password'), :required, :help('Enter your new password')});
+            $form.field('confirm-new-password', {:type('password'), :placeholder('Confirm New Password'), :required, :help('Re-enter your new password')});
+            $form.render;
+            $.status = $form.status;
+            $.content = $form.content;
     }
+
+    method display_edit () {
+            %.page<title> = 'Update my details';
+            my $form = Rakuwa::Form.new(
+                    :title('Update my details'),
+                    :request($.request),
+                    :path(@.path),
+                    :name('edit-form'),
+                    :action('/user/edit'),
+                    :method('POST'),
+                    :fields-names(["name", "picture"]),
+                    :submits-names(["Update"])
+                    );
+            $form.init;
+            $form.field('name', {:type('text'), :placeholder('Name'), :value($.session.user-name)});
+            $form.field('picture', {:type('file'), :help('Select a picture to upload or leave empty to keep the current one')});
+            $form.render;
+            $.status = $form.status;
+            $.content = $form.content;
+    }
+
 
 }

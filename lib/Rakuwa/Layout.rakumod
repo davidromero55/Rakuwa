@@ -15,6 +15,8 @@ class Rakuwa::Layout {
                 :page($view.page),
                 :content($view.content),
                 :user-id($.session.user-id),
+                :is-admin($.session.is-admin),
+                :role($.session.role),
                 #:user-name($.session.user-name),
 
                 );

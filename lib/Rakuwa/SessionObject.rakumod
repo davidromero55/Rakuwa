@@ -5,6 +5,9 @@ class Rakuwa::SessionObject does Cro::HTTP::Auth does JSON::Class {
     has $.user-id is rw = 0;
     has Str $.user-name is rw = '';
     has Str $.user-email is rw = '';
+    has Str $.user-picture is rw = '';
+    has Int $.is-admin is rw = 0;
+    has Str $.role is rw = 'guest';
 
     has @.messages = [];
 
@@ -19,6 +22,8 @@ class Rakuwa::SessionObject does Cro::HTTP::Auth does JSON::Class {
         $.user-id = 0;
         $.user-name = '';
         $.user-email = '';
+        $.is-admin = False;
+        $.role = 'guest';
     }
 
     method add-msg(Str $type, Str $message, :$element = '') {

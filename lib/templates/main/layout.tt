@@ -33,6 +33,13 @@
             </ul>
             <ul class="nav d-flex">
                 [% IF user-id > 0 %]
+                [% IF is-admin %]
+                <li class="nav-item">
+                    <a class="nav-link" href="/settings" title="Settings" alt="Settings">
+                        <span class="material-symbols-outlined">settings</span>
+                    </a>
+                </li>
+                [% END %]
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="material-symbols-outlined me-1">account_circle</span>

@@ -22,6 +22,7 @@ class Rakuwa::Form is Rakuwa::View {
 
     has $.form_start is rw = '';
     has $.form_end is rw = '</form>';
+    has $.multipart is rw = False; # Default to False
 
     has %.field_message;
 
@@ -207,6 +208,28 @@ class Rakuwa::Form is Rakuwa::View {
             return $field_html;
         }
 
+        if (%field{'type'} eq 'file') {
+            $field_html ~= '<input type="' ~ %field{'type'} ~ '" name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
+            for %field.keys -> $key {
+                next if $key eq 'id';
+                next if $key eq 'name';
+                next if $key eq 'label';
+                next if $key eq 'type';
+                next if $key eq 'html_label';
+                next if $key eq 'help';
+                next if $key eq 'error';
+                next if $key eq 'message';
+                if (%field{$key}:exists) {
+                    $field_html ~= "$key=\"" ~ %field{$key} ~ "\" ";
+                }
+            }
+            $.multipart = True; # Set multipart for file uploads
+            $field_html ~= '/>';
+            return $field_html;
+
+        }
+
+
         $field_html ~= '<input type="' ~ %field{'type'} ~ '" name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
         for %field.keys -> $key {
             next if $key eq 'id';
@@ -247,6 +270,9 @@ class Rakuwa::Form is Rakuwa::View {
         $form_start ~= 'method="' ~ $.method ~ '" ';
         $form_start ~= 'action="' ~ $.action ~ '" ';
         $form_start ~= 'class="' ~ $.class ~ '" ';
+        if ($.multipart) {
+            $form_start ~= 'enctype="multipart/form-data" ';
+        }
         $form_start = '<form ' ~ $form_start ~ '>';
         return $form_start;
     }
