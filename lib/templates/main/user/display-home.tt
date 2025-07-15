@@ -5,8 +5,9 @@
             <div class="card-body">
                 [% msg %]
                 <div class="row">
+                    [% picture = data.user.picture %]
                     <div class="col-12 text-center">
-                        [% IF data.user.picture %]
+                        [% IF picture %]
                         <img src="/data/users/[% data.user.picture %]" class="img-fluid rounded-circle" alt="User Picture" style="max-width: 150px; max-height: 150px;">
                         [% ELSE %]
                         <span class="material-symbols-outlined" style="font-size:100px;">account_circle</span>
