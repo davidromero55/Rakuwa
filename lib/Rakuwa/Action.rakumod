@@ -51,8 +51,6 @@ class Rakuwa::Action {
             $conf.data_directory.IO.mkdir;
         }
 
-        say "Saving image to: ", $conf.data_directory;
-
         # Create the directory for the image if specified
         my $filepath = $conf.data_directory;
         $filepath = $filepath ~ $directory ~ '/' if $directory;
@@ -69,12 +67,8 @@ class Rakuwa::Action {
         # Add the image filename to the path
         $filepath = $filepath;  # Add the image filename to the path
 
-        say "Full file path: ", $filepath;
-
         # Check if the file already exists
         if ("$filepath$filename".IO ~~ :f) {
-            say "File already exists: ", $filepath , $filename;
-
             # try adding a timestamp to the filename
             my $timestamp = DateTime.now().posix;
             $filename = $image.filename.subst(/(\.\w+)$/, "-$timestamp.$extension");
@@ -86,8 +80,6 @@ class Rakuwa::Action {
             }
         }
 
-        say "Saving image to: ", $filepath, $filename;
-        # write the image to the file
         "$filepath$filename".IO.spurt: $image.body-blob;
 
         return $filename;
