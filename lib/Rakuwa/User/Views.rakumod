@@ -70,7 +70,7 @@ class Rakuwa::User::Views is Rakuwa::View {
                     :submits-names(["Update"])
                     );
             $form.init;
-            $form.field('name', {:type('text'), :placeholder('Name'), :value($.session.user-name)});
+            $form.field('name', {:type('text'), :placeholder('Name'), :value($.session.user-name), :required, :help('Enter your name')});
             $form.field('picture', {:type('file'), :help('Select a picture to upload or leave empty to keep the current one')});
             $form.render;
             $.status = $form.status;

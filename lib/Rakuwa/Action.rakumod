@@ -25,13 +25,13 @@ class Rakuwa::Action {
 
     method save-image ($image, Str $directory = '' --> Str) {
         my $filename = $image.filename;
-        my $extension = "$filename".IO.extension;
-        my $type = $image.content-type.type;
 
         if $filename.chars == 0 {
-            say "Invalid filename: ", $image.filename;
             return "";  # Return empty string if the filename is invalid
         }
+
+        my $extension = "$filename".IO.extension;
+        my $type = $image.content-type.type;
 
         if ($type !~~ /image/) {
             say "Invalid image type: ", $type;
@@ -71,7 +71,7 @@ class Rakuwa::Action {
         if ("$filepath$filename".IO ~~ :f) {
             # try adding a timestamp to the filename
             my $timestamp = DateTime.now().posix;
-            $filename = $image.filename.subst(/(\.\w+)$/, "-$timestamp.$extension");
+            $filename = $filename.subst(/(\.\w+)$/, "-$timestamp.$extension");
 
             # Check if the new file already exists
             if ("$filepath$filename".IO ~~ :f) {
