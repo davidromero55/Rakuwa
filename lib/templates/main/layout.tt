@@ -23,7 +23,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                [% IF user-id > 0 %]
+                [% IF user-id gt 0 %]
                 <li class="nav-item">
                     <a class="nav-link" href="/dashboard" title="Dashboard" alt="Dashboard">
                         <span class="material-symbols-outlined">dashboard</span> Dashboard
@@ -32,7 +32,7 @@
                 [% END %]
             </ul>
             <ul class="nav d-flex">
-                [% IF user-id > 0 %]
+                [% IF user-id gt 0 %]
                 [% IF is-admin %]
                 <li class="nav-item">
                     <a class="nav-link" href="/settings" title="Settings" alt="Settings">
