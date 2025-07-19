@@ -275,6 +275,80 @@ class Rakuwa::Form is Rakuwa::View {
             return $field_html;
         }
 
+        if (%field{'type'} eq 'select') {
+            $field_html ~= '<select name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
+            for %field.keys -> $key {
+                next if $key eq 'id';
+                next if $key eq 'name';
+                next if $key eq 'label';
+                next if $key eq 'type';
+                next if $key eq 'html_label';
+                next if $key eq 'help';
+                next if $key eq 'error';
+                next if $key eq 'message';
+                next if $key eq 'options';
+                next if $key eq 'labels';
+                if (%field{$key}:exists) {
+                    $field_html ~= "$key=\"" ~ %field{$key} ~ "\" ";
+                }
+            }
+            $field_html ~= '>';
+            for %field<options>.Array -> $option {
+                my $selected = '';
+                if ($option eq %field{'value'}) {
+                    $selected = ' selected="selected"';
+                }
+                my $option-label = $option;
+                say %field{'labels'}.raku;
+                if (%field{'labels'}.Hash:exists($option)) {
+                    $option-label = %field{'labels'}{$option} // $option;
+                }
+                $field_html ~= '<option value="' ~ $option ~ '"' ~ $selected ~ '>' ~ escape-html($option-label) ~ '</option>';
+            }
+            $field_html ~= '</select>';
+            return $field_html;
+        }
+
+        if (%field{'type'} eq 'radio') {
+            %field{'class'} = "form-check-input" unless %field{'class'} ne $.default_field_class;
+            for %field<options>.Array -> $option {
+                my $selected = '';
+                if ($option eq %field{'value'}) {
+                    $selected = ' checked="checked"';
+                }
+                my $option_id = %field{'id'} ~ '-' ~ $option;
+                $option_id = $option_id.subst(/\W/, '', :g);
+
+                my $option-label = $option;
+                say %field{'labels'}.raku;
+                if (%field{'labels'}.Hash:exists($option)) {
+                    $option-label = %field{'labels'}{$option} // $option;
+                }
+
+                $field_html ~= '<div class="form-check">';
+                $field_html ~= '<input type="radio" name="' ~ %field{'name'} ~ '" id="' ~ $option_id ~ '" value="' ~ $option ~ '"' ~ $selected ~ ' ';
+                for %field.keys -> $key {
+                    next if $key eq 'id';
+                    next if $key eq 'name';
+                    next if $key eq 'label';
+                    next if $key eq 'type';
+                    next if $key eq 'html_label';
+                    next if $key eq 'help';
+                    next if $key eq 'error';
+                    next if $key eq 'message';
+                    next if $key eq 'options';
+                    next if $key eq 'labels';
+                    if (%field{$key}:exists) {
+                        $field_html ~= "$key=\"" ~ %field{$key} ~ "\" ";
+                    }
+                }
+                $field_html ~= '/>';
+                $field_html ~= '<label class="form-check-label" for="' ~ $option_id ~ '">' ~ $option-label ~ '</label>';
+                $field_html ~= '</div>';
+            }
+            return $field_html;
+        }
+
         $field_html ~= '<input type="' ~ %field{'type'} ~ '" name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
         for %field.keys -> $key {
             next if $key eq 'id';
