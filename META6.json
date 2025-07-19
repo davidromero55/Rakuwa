@@ -16,7 +16,8 @@
         "DB::MySQL",
         "Cro::HTTP::Auth",
         "JSON::Class",
-        "Cro::HTTP::Session::MySQL"
+        "Cro::HTTP::Session::MySQL",
+        "HTML::Escape"
     ],
     "provides": {
         "Routes": "lib/Routes.rakumod",

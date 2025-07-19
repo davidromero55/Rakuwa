@@ -1,6 +1,7 @@
 use Rakuwa::Conf;
 use Rakuwa::View;
 use Template6;
+use HTML::Escape;
 
 class Rakuwa::Form is Rakuwa::View {
     has $.id is rw = "";
@@ -26,6 +27,8 @@ class Rakuwa::Form is Rakuwa::View {
 
     has %.field_message;
 
+    has $.default_field_class = 'form-control form-control-sm';
+
     method init () {
 
         # Set form ID and name
@@ -44,7 +47,7 @@ class Rakuwa::Form is Rakuwa::View {
 
         # Fields
         for @.fields-names -> $field_name {
-            %.fields{$field_name} =  {:name($field_name), :class('form-control form-control-sm' )};
+            %.fields{$field_name} =  {:name($field_name), :class('' )};
         }
 
         # Submits
@@ -92,7 +95,7 @@ class Rakuwa::Form is Rakuwa::View {
 
         %.fields{$field_name} = %attrs if %attrs;
         %.fields{$field_name}{'name'} = $field_name;
-        %.fields{$field_name}{"class"} = 'form-control form-control-sm' unless $.fields{$field_name}{"class"};
+        %.fields{$field_name}{"class"} = $.default_field_class unless $.fields{$field_name}{"class"};
     }
 
     method submit ($name, %attrs) {
@@ -227,7 +230,7 @@ class Rakuwa::Form is Rakuwa::View {
         }
 
         if (%field{'type'} eq 'checkbox') {
-            %field{'class'} = "form-check-input" // False;
+            %field{'class'} = "form-check-input" unless %field{'class'} ne $.default_field_class;
 
             if (%field{'value'}:exists && %field{'value'} eq '1') {
                 %field{'checked'} = 'checked';
@@ -252,7 +255,25 @@ class Rakuwa::Form is Rakuwa::View {
             return $field_html;
         }
 
-
+        if (%field{'type'} eq 'textarea') {
+            $field_html ~= '<textarea name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
+            for %field.keys -> $key {
+                next if $key eq 'id';
+                next if $key eq 'name';
+                next if $key eq 'label';
+                next if $key eq 'type';
+                next if $key eq 'html_label';
+                next if $key eq 'help';
+                next if $key eq 'error';
+                next if $key eq 'message';
+                next if $key eq 'value';
+                if (%field{$key}:exists) {
+                    $field_html ~= "$key=\"" ~ %field{$key} ~ "\" ";
+                }
+            }
+            $field_html ~= '>' ~ escape-html(%field{'value'}) ~ '</textarea>';
+            return $field_html;
+        }
 
         $field_html ~= '<input type="' ~ %field{'type'} ~ '" name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
         for %field.keys -> $key {
