@@ -9,6 +9,15 @@
                          [% hidden-field.field %]
                      [% end %]
                      [% for field in fields %]
+                        [% IF field.type eq "checkbox" %]
+                         <div class="col-md-12 mb-3">
+                             [% field.field %]
+                             [% field.html_label %]
+                             [% field.message %]
+                             [% field.help %]
+                             [% field.error %]
+                         </div>
+                        [% ELSE %]
                         <div class="col-md-12 mb-3">
                             [% field.html_label %]
                             [% field.field %]
@@ -16,6 +25,7 @@
                             [% field.help %]
                             [% field.error %]
                         </div>
+                        [% END %]
                      [% end %]
                 </div>
                 [% msg %]

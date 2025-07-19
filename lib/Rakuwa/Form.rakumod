@@ -73,13 +73,10 @@ class Rakuwa::Form is Rakuwa::View {
         %.field_message = {};
         my %messages_arrays = $.session.get-msgs-for-elements();
         for %messages_arrays.keys -> $field_name {
-            say "Field: $field_name";
             my @messages = %messages_arrays{$field_name};
-            say "Errors: " ~ @messages.elems;
             my $message = '';
             for @messages -> @message {
                 for @message -> %message {
-                    say "Error: " ~ %message<message>;
                     $message ~= %message<message> ~ ' ';
                 }
             }
@@ -228,6 +225,33 @@ class Rakuwa::Form is Rakuwa::View {
             return $field_html;
 
         }
+
+        if (%field{'type'} eq 'checkbox') {
+            %field{'class'} = "form-check-input" // False;
+
+            if (%field{'value'}:exists && %field{'value'} eq '1') {
+                %field{'checked'} = 'checked';
+            }
+            %field{'value'} = '1';
+
+            $field_html ~= '<input type="' ~ %field{'type'} ~ '" name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
+            for %field.keys -> $key {
+                next if $key eq 'id';
+                next if $key eq 'name';
+                next if $key eq 'label';
+                next if $key eq 'type';
+                next if $key eq 'html_label';
+                next if $key eq 'help';
+                next if $key eq 'error';
+                next if $key eq 'message';
+                if (%field{$key}:exists) {
+                    $field_html ~= "$key=\"" ~ %field{$key} ~ "\" ";
+                }
+            }
+            $field_html ~= '/>';
+            return $field_html;
+        }
+
 
 
         $field_html ~= '<input type="' ~ %field{'type'} ~ '" name="' ~ %field{'name'} ~ '" id="' ~ %field{'id'} ~ '" ';
