@@ -1,0 +1,15 @@
+DBTable
+[% msg %]
+[% table-start %]
+[% IF caption ne "" %]<caption>[% caption %]</caption>[% END %]
+<thead>
+[% columns %]
+</thead>
+<tbody>
+[% details %]
+</tbody>
+<tfoot>
+[% totals %]
+</tfoot>
+</table>
+[% pagination %]

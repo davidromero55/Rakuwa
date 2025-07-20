@@ -1,6 +1,7 @@
 use Rakuwa::Conf;
 use Rakuwa::View;
 use Rakuwa::Form;
+use Rakuwa::DBTable;
 use Rakuwa::DB;
 
 class Rakuwa::Blog::AdminViews is Rakuwa::View {
@@ -12,4 +13,23 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
         %.data<user> = $db.query("SELECT * FROM users WHERE user_id = ?", $.session.user-id).hash;
     }
 
+    method display_categories () {
+        my $table = Rakuwa::DBTable.new(
+                :title('Categories'),
+                :request($.request),
+                :path(@.path),
+                :name('login-form'),
+                :key_column('category_id'),
+                :query({
+                    :select("*"),
+                    :from("blog_categories"),
+                    :order_by("category"),
+                }),
+                );
+        $table.init;
+        $table.render;
+        $.status = $table.status;
+        $.content = $table.content;
+
+    }
 }
