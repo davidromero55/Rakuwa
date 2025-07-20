@@ -63,6 +63,20 @@ class Rakuwa::View {
         return $html-alerts;
     }
 
+    method _tag (Str $tag, Hash $attributes, $content='', :$onlystart = False --> Str) {
+        # Helper method to create HTML tags with attributes and content
+        my $attrs = '';
+        for $attributes.kv -> $key, $value {
+            $attrs ~= "$key=\"$value\" ";
+        }
+        if $onlystart {
+            return "<{$tag} {$attrs}>";
+        } else {
+            return "<{$tag} {$attrs}>{$content}</{$tag}}>";
+        }
+
+    }
+
 
 
 }

@@ -25,6 +25,7 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
                     :from("blog_categories"),
                     :order_by("category"),
                 }),
+                :columns-align(<left right center>),
                 );
         $table.init;
         $table.render;

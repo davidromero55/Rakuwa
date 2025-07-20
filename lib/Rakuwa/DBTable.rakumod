@@ -18,6 +18,10 @@ class Rakuwa::DBTable is Rakuwa::View {
     has %.custom_labels is rw = {};
     has $.key_column is rw = '';
     has $.hidde_key_column is rw = True;
+    has $.columns-attributes is rw = {
+        :class("text-center"),
+    };
+    has @.columns-align is rw = ();
     has %.detail is rw = {
         :Tr({
             :params_a({:class("zl_row_a")}),
@@ -119,50 +123,48 @@ class Rakuwa::DBTable is Rakuwa::View {
                 $label = $col;
                 $label = $label.subst(/_/,' ', :g).subst(/^\w/, { $/.uc });
             }
-            $columns-str ~= "<th>" ~ $label ~ "</th>";
+            $columns-str ~= "<th ";
+            for $.columns-attributes.kv -> $key, $value {
+                $columns-str ~= "$key=\"$value\" ";
+            }
+
+            $columns-str ~= ">" ~ $label ~ "</th>";
         }
         return $columns-str;
     }
 
     method get-details (-->Str) {
         # Prepare the details for the table rows
-        my $details-str = '';
         if @!data.elems == 0 {
             # No data available, return no data message
-            $details-str ~= "<tr><td ";
-            for %.no_data_td.kv -> $key, $value {
-                $details-str ~= "$key=\"$value\" ";
-            }
             my $colspan = @!columns.elems;
             if $.hidde_key_column {
                 $colspan--;
             }
-            $details-str ~= "colspan=\"" ~ $colspan ~ "\">" ~ %.labels<no_data> ~ "</td></tr>";
-            return $details-str;
+            %.no_data_td<colspan> = $colspan;
+            return self._tag('tr', {},
+                                 self._tag('td', %.no_data_td, %.labels<no_data>)
+                                 );
         }
+
+        my $details-str = '';
         for @!data -> $row {
             my $row-class = ($.rows_details eq 'alternate') ?? 'zl_row_a' !! 'zl_row_b';
-            $details-str ~= "<tr class=\"$row-class\">";
+            my $index = 0;
+            my $tds-str = '';
             for @!columns -> $col {
-                my $value = $row{$col} // '';
-                if ($col eq $.key_column && $.hidde_key_column) {
-                    # Skip hidden key column
-                    next;
-                }
-                $details-str ~= "<td>" ~ $value ~ "</td>";
+                next  if ($col eq $.key_column && $.hidde_key_column);
+                $tds-str ~= self._tag('td', { :align($.columns-align[$index] // 'left') }, ($row{$col} // ''));
+                $index++;
             }
-            $details-str ~= "</tr>";
+            $details-str ~= self._tag('tr', {:class($row-class)}, $tds-str);
         }
         return $details-str;
     }
 
     method get-table-start () {
         # Prepare the table start HTML
-        my $table_attrs = '';
-        for %.table-attrs.kv -> $key, $value {
-            $table_attrs ~= "$key=\"$value\" ";
-        }
-        return '<table ' ~ $table_attrs ~ '>';
+        return self._tag('table', %.table-attrs, '',:onlystart);
     }
 
     method render (%vars={}) {
