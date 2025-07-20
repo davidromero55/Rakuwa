@@ -9,34 +9,11 @@ class Rakuwa {
     has %.page is rw;
     has Int $.status is rw;
     has %.headers is rw;
-    has %.conf is rw = Rakuwa::Conf.new().get-all();
     has $.rdb is rw;
-    #    has Rakuwa::Session $.session is rw;
-    #    has DB::MySQL $.db is rw;
 
     method init () {
         $.status  = 200;
         %.headers{'Content-Type'} = 'text/html';
-
-    #    init-db();
-    #        $.params = $.request.parameters;
-    #       self.prepare_controller;
-
-        # # Database
-        # if $.conf{'DB'}.defined > 0 {
-        #     $.db = DB::MySQL.new(
-        #             :host($.conf{'DB'}{'host'}),
-        #             :port($.conf{'DB'}{'port'}),
-        #             :user($.conf{'DB'}{'user'}),
-        #             :password($.conf{'DB'}{'password'}),
-        #             :database($.conf{'DB'}{'database'}),
-        #             );
-        # }
-
-        # # Session
-        # $.session = Rakuwa::Session.new();
-        # $.session.init((%env<HTTP_COOKIE> || ''));
-
     }
 
     method validate-path (@path --> Bool) {
@@ -78,7 +55,7 @@ class Rakuwa {
 
     method not-found ($error --> Str) {
         my $TT = Template6.new();
-        $TT.add-path($.conf<Template><template_dir> ~ '/');
+        $TT.add-path(%conf.template.template_dir ~ '/');
         my $content = $TT.process("404-view",
                 :$error,
                 );

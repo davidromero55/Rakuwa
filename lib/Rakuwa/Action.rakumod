@@ -11,7 +11,6 @@ class Rakuwa::Action {
     };
     has @.path is rw = ();
     has $.request is rw;
-    has %.conf is rw = Rakuwa::Conf.new().get-all();
     has $.db is rw = get-db();
     has Rakuwa::SessionObject $.session is rw = $!request.auth; # Session object from the request
 
@@ -38,8 +37,6 @@ class Rakuwa::Action {
             return "";  # Return empty string if the type is not an image
         }
 
-        my $conf = Rakuwa::Conf.new;
-
         # remove all to the right of the first dot
         $filename = $filename.subst(/<-[.]>+$/, '', :g);
         # Remove non-alphanumeric characters from the filename
@@ -47,12 +44,12 @@ class Rakuwa::Action {
         $filename = "$filename.$extension";  # Add the extension back to the filename
 
         # Create the data directory if it doesn't exist
-        if (! ($conf.data_directory.IO ~~ :d)) {
-            $conf.data_directory.IO.mkdir;
+        if (! (%conf<data_directory>.IO ~~ :d)) {
+            %conf<data_directory>.IO.mkdir;
         }
 
         # Create the directory for the image if specified
-        my $filepath = $conf.data_directory;
+        my $filepath = %conf<data_directory>;
         $filepath = $filepath ~ $directory ~ '/' if $directory;
         if (! ($filepath.IO ~~ :d)) {
             $filepath.IO.mkdir;

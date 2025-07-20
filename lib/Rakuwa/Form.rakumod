@@ -402,8 +402,8 @@ class Rakuwa::Form is Rakuwa::View {
 
         $.status = 200;
         my $template = $.template;
-        my $TT = Template6.new(:include-path([%.conf<Template><template_dir> ~ '/']));
-        $TT.add-path(%.conf<Template><template_dir> ~ '/');
+        my $TT = Template6.new(:include-path([%conf<template><template_dir> ~ '/']));
+        $TT.add-path(%conf<template><template_dir> ~ '/');
 
         my @fields-array;
         my @hidden-fields;
@@ -428,7 +428,7 @@ class Rakuwa::Form is Rakuwa::View {
                 :@hidden-fields,
                 :submits(@submits-array),
                 :msg(self.get-msgs),
-                :debug(%.conf<App><debug>));
+                :debug(%conf<debug>));
     }
 
 }

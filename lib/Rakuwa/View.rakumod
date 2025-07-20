@@ -4,9 +4,8 @@ use Template6;
 use Rakuwa::SessionObject;
 
 class Rakuwa::View {
-    has %.conf is rw = Rakuwa::Conf.new().get-all();
     has %.page is rw = {
-        :title(%!conf<App><name>),
+        :title(%conf<name>),
         :description(''),
         :keywords('')
     }
@@ -27,7 +26,7 @@ class Rakuwa::View {
         if $.status == 0 {
             $.status = 200; # Default status code
             my $TT = Template6.new();
-            $TT.add-path(%.conf<Template><template_dir> ~ '/');
+            $TT.add-path(%conf<template><template_dir> ~ '/');
             $.content = $TT.process(self.template,
                     :data(%.data),
                     :page(%.page),

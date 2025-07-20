@@ -6,21 +6,15 @@ use DB::MySQL;
 my $db;
 
 sub init-db is export {
-    my $conf = Rakuwa::Conf.new;
-    my %db_conf = $conf.get('DB');
 
-    if %db_conf {
-        $db = DB::MySQL.new(
-            :host(%db_conf<host>),
-            :port(%db_conf<port>),
-            :user(%db_conf<user>),
-            :password(%db_conf<password>),
-            :database(%db_conf<database>),
-            :charset('utf8mb4')
+    $db = DB::MySQL.new(
+        :host(%conf<db><host>),
+        :port(%conf<db><port>),
+        :user(%conf<db><user>),
+        :password(%conf<db><password>),
+        :database(%conf<db><database>),
+        :charset(%conf<db><charset>),
         );
-    } else {
-        die "Database configuration not found in Rakuwa::Conf";
-    }
 }
 
 sub get-db is export {

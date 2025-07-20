@@ -172,9 +172,8 @@ class Rakuwa::DBTable is Rakuwa::View {
 
         $.status = 200;
         my $template = $.template;
-        my $TT = Template6.new(:include-path([%.conf<Template><template_dir> ~ '/']));
-        $TT.add-path(%.conf<Template><template_dir> ~ '/');
-
+        my $TT = Template6.new(:include-path([%conf<template><template_dir> ~ '/']));
+        $TT.add-path(%conf<template><template_dir> ~ '/');
 
         $.content = $TT.process($.template,
                 :title($.title),
@@ -184,7 +183,7 @@ class Rakuwa::DBTable is Rakuwa::View {
                 :columns(self.get-columns),
                 :details(self.get-details),
                 :pagination($.pagination),
-                :debug(%.conf<App><debug>)
+                :debug(%conf<debug>)
                 );
     }
 

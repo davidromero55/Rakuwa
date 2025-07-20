@@ -1,66 +1,42 @@
+unit module Rakuwa::Conf;
 
+our %conf is export = (
+    :name('Rakuwa'),
+    :version('0.1'),
+    :description('Raku Web Application Framework'),
+    :domain('localhost'),
 
-class Rakuwa::Conf {
+    :port(5000),
+    :debug,
+    :timezone('America/Mexico_City'),
+    :data_directory('lib/data/'),
 
-    my %conf;
-
-    has Str $.name is rw = 'Rakuwa';
-    has Str $.version is rw = '0.1';
-    has Str $.description is rw = 'Raku Web Application Framework';
-    has Str $.domain is rw = 'localhost';
-
-    has Int $.port is rw = 5000;
-    has Bool $.debug is rw = True;
-    has Str $.timezone is rw = 'America/Mexico_City';
-
-    has Str $.secret_key is rw = 'tu-clave-secreta-muy-larga-y-segura';
-    has Str $.csrf_token is rw = '';
-    has Str $.data_directory is rw = 'lib/data/';
-
-
-    %conf<DB> = {
+    :db({
         :host('localhost'),
         :port(3306),
         :user('rakuwa'),
         :password('my-strong-password'),
         :database('rakuwa'),
-        :charset('utf8'),
-    };
+        :charset('utf8mb4'),
+    }),
 
-    # Session
-    %conf<Session> = {
+    :session({
         :name('RAKUWA_SESSION'),
         :max_age(3600),
         :!secure,
         :httponly,
         :path('/'),
-    };
+    }),
 
-
-    # Templates
-    %conf<Template> = {
+    :template({
         :template_dir('lib/templates/main'),
         :cache,
         :auto_reload,
-    };
+    }),
 
-    # Security
-    %conf<Security> = {
+    :security({
         :secret_key('tu-clave-secreta-muy-larga-y-segura'),
-        :csrf_token,
+        :csrf_token(''),
         :password_min_length(8),
-    };
-
-    method get (Str $key --> Any) {
-        return %conf{$key} if %conf{$key}.defined;
-        return Nil;
-    }
-
-    method get-all (--> Hash) {
-        return %conf;
-    }
-
-}
-
-
-
+    }),
+);

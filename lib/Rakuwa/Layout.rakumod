@@ -6,7 +6,6 @@ use Rakuwa::SessionObject;
 
 class Rakuwa::Layout {
     has $.template is rw = "layout.crotmp";
-    has %.conf  = Rakuwa::Conf.new.get-all;
     has Rakuwa::SessionObject $.session is rw;
 
     method render ($view --> Str) {
@@ -20,8 +19,9 @@ class Rakuwa::Layout {
         }
 
 
+
         my $TT = Template6.new();
-        $TT.add-path(%.conf<Template><template_dir> ~ '/');
+        $TT.add-path(%conf<template><template_dir> ~ '/');
         return $TT.process("layout",
                 :page($view.page),
                 :content($view.content),
@@ -29,6 +29,7 @@ class Rakuwa::Layout {
                 :user-name($.session.user-name),
                 :is-admin($.session.is-admin),
                 :role($.session.role),
+                :generator("{%conf<name>} {%conf<version>}"),
                 :apps(@apps),
                 );
     }
