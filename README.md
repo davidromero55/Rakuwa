@@ -6,7 +6,13 @@ Rakuwa - Raku Web Application framework.
 SYNOPSIS
 ========
 
-This is a work in progress, and is not yet ready for production use.
+Rakuwa is a simple web application framework for Raku, designed to
+make it easy to build web applications quickly and efficiently.
+
+STATUS
+======
+
+This is a work in progress, and is not yet ready for use.
 
 DESCRIPTION
 ===========
@@ -14,23 +20,34 @@ DESCRIPTION
 Just a simple Raku web application framework, with a focus on
 convenience and ease of use. It is not intended to be a full-featured
 framework, but rather a simple and easy to use tool for building
-web applications in Raku.
+web applications.
+
+This framework uses Cro for routing and handling requests, and Template6 for
+rendering templates. It also provides a simple database access layer for
+MySQL, and a simple authentication system.
+
+### Features
+
+* Routing
+* Templates (Template6)
+* Forms
+* Database access (MySQL)
+* Authentication
+* Sessions
+* Simple and easy to use
+* Lightweight and fast
 
 ### Short Term Goals
 
-* Forms
-
 * Lists
-
+* Simple CRUD generator
 * Api Rest
-
-* Authentication
-
-* Sessions
-
+* Installer
+ 
 ### Long Term Goals
 
 * Plugins, etc.
+* Multiple database engines (Currently only supports MySQL)
 
 AUTHOR
 ======
