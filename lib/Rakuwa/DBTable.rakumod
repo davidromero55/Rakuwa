@@ -157,13 +157,25 @@ class Rakuwa::DBTable is Rakuwa::View {
                 $tds-str ~= self._tag('td', { :align($.columns-align[$index] // 'left') }, ($row{$col} // ''));
                 $index++;
             }
-            $details-str ~= self._tag('tr', {:class($row-class)}, $tds-str);
+
+            my $location = %.links<location>;
+            if $location {
+                $details-str ~= self._tag('tr', {
+                    :class($row-class ~ ' c-pointer'),
+                    :onclick("window.location.href='" ~ $location ~ "/" ~ $row{$.key_column} ~ "'"),
+                }, $tds-str);
+            } else {
+                $details-str ~= self._tag('tr', { :class($row-class) }, $tds-str);
+            }
         }
         return $details-str;
     }
 
     method get-table-start () {
         # Prepare the table start HTML
+        if (%.links<location>) {
+            %.table-attrs<class> ~= " table-hover";
+        }
         return self._tag('table', %.table-attrs, '',:onlystart);
     }
 

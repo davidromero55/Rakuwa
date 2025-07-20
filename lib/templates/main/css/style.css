@@ -23,3 +23,7 @@ input[readonly] {
 .form-group .badge {
     font-weight: normal;
 }
+
+.c-pointer {
+    cursor: pointer;
+}

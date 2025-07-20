@@ -1,4 +1,3 @@
-DBTable
 [% msg %]
 [% table-start %]
 [% IF caption ne "" %]<caption>[% caption %]</caption>[% END %]
@@ -8,8 +7,4 @@ DBTable
 <tbody>
 [% details %]
 </tbody>
-<tfoot>
-[% totals %]
-</tfoot>
 </table>
-[% pagination %]
