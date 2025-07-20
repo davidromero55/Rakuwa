@@ -8,6 +8,7 @@ use Rakuwa::User::Actions;
 # Rakuwa Routes
 use Rakuwa::Dashboard::Routes;
 use Rakuwa::User::Routes;
+use Rakuwa::Blog::Routes;
 
 sub routes() is export {
     route {
@@ -37,6 +38,8 @@ sub routes() is export {
         include dashboard-routes($Rakuwa);
 
         include user-routes($Rakuwa);
+
+        include blog-routes($Rakuwa);
 
 
     }

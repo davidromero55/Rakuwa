@@ -30,6 +30,26 @@
                     </a>
                 </li>
                 [% END %]
+                [% FOR app in apps %]
+                [% IF app.menu %]
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        [% app.icon %] [% app.name %]
+                    </a>
+                    <ul class="dropdown-menu">
+                        [% FOR menu = app.menu %]
+                        <li><a class="dropdown-item" href="[% menu.url %]">[% menu.icon %] [% menu.name %]</a></li>
+                        [% END %]
+                    </ul>
+                </li>
+                [% ELSE %]
+                <li class="nav-item">
+                    <a class="nav-link" href="[% app.url %]" title="[% app.name %]" alt="[% app.name %]">
+                        [% app.icon %] [% app.name %]
+                    </a>
+                </li>
+                [% END %]
+                [% END %]
             </ul>
             <ul class="nav d-flex">
                 [% IF user-id gt 0 %]
