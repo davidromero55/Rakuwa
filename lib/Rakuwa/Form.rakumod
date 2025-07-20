@@ -15,7 +15,7 @@ class Rakuwa::Form is Rakuwa::View {
     has %.submits is rw = {};
     has @.submit-classes is rw = ('btn-primary', 'btn-secondary', 'btn-danger', 'btn-secondary',
                                   'btn-secondary', 'btn-secondary');
-    has $.template is rw = 'form.tt';
+    has $.template is rw = 'form';
     has $.class is rw = 'needs-validation';
     has $.request is rw;
     has @.path is rw = ();
@@ -408,7 +408,6 @@ class Rakuwa::Form is Rakuwa::View {
         self.prepare_fields;
 
         $.status = 200;
-        my $template = $.template;
         my $TT = Template6.new(:include-path([%conf<template><template_dir> ~ '/']));
         $TT.add-path(%conf<template><template_dir> ~ '/');
 
@@ -427,7 +426,7 @@ class Rakuwa::Form is Rakuwa::View {
             @submits-array.push: %.submits{$submit_name};
         }
 
-        $.content = $TT.process("form",
+        $.content = $TT.process($.template,
                 :title($.title),
                 :form_start($.form_start),
                 :form_end($.form_end),

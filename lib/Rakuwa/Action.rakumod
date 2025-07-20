@@ -81,4 +81,21 @@ class Rakuwa::Action {
 
         return $filename;
     }
+
+    method url-safe-string(Str $orig-string --> Str) {
+        # Convert the string to lowercase and trim whitespace
+        my $string = $orig-string.trim.lc;
+
+        # Replace non-alphanumeric characters with hyphens
+        $string ~~ s:g/<-[ a..z|0..9 ]>/-/;
+
+        # Remove consecutive hyphens
+        $string ~~ s:g/ \-\-+ /-/;
+
+        # Remove leading and trailing hyphens
+        $string ~~ s:g/^\-//;
+        $string ~~ s:g/\-$//;
+
+        return $string;
+    }
 }

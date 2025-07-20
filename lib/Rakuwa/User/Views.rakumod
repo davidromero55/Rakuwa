@@ -25,7 +25,8 @@ class Rakuwa::User::Views is Rakuwa::View {
                 :action('/user/login'),
                 :method('POST'),
                 :fields-names(["email", "password"]),
-                :submits-names(["login"])
+                :submits-names(["login"]),
+                :template('user/display-login')
                 );
         $form.init;
         $form.field('email', {:type('email'), :placeholder('Email'), :required, :help('Enter your email address')});
@@ -67,7 +68,7 @@ class Rakuwa::User::Views is Rakuwa::View {
                     :action('/user/edit'),
                     :method('POST'),
                     :fields-names(["name", "picture"]),
-                    :submits-names(["Update"])
+                    :submits-names(["Update"]),
                     );
             $form.init;
             $form.field('name', {:type('text'), :placeholder('Name'), :value($.session.user-name), :required, :help('Enter your name')});

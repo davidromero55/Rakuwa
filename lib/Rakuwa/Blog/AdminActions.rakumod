@@ -9,8 +9,7 @@ class Rakuwa::Blog::AdminActions is Rakuwa::Action {
         my $submit = %params<_submit> // '';
         my $category_id = %params<category_id> // 0;
         my $category = %params<category> // '';
-        my $url = $category;
-        $url ~~ s:g/\W/-/;
+        my $url = self.url-safe-string($category);
         my $db = get-db;
         if ($submit eq 'Save') {
             if $category_id == 0 {
