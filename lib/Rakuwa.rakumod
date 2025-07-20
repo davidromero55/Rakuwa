@@ -55,7 +55,7 @@ class Rakuwa {
 
     method not-found ($error --> Str) {
         my $TT = Template6.new();
-        $TT.add-path(%conf.template.template_dir ~ '/');
+        $TT.add-path(%conf<template><template_dir> ~ '/');
         my $content = $TT.process("404-view",
                 :$error,
                 );
