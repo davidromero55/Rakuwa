@@ -26,8 +26,9 @@ class Rakuwa::Form is Rakuwa::View {
     has $.multipart is rw = False; # Default to False
 
     has %.field_message;
-
     has $.default_field_class = 'form-control form-control-sm';
+
+    has %.values is rw = {};
 
     method init () {
 
@@ -99,10 +100,7 @@ class Rakuwa::Form is Rakuwa::View {
     }
 
     method submit ($name, %attrs) {
-        # Prevent null
-        if (%.submits{$name}.exists($name)) {
-            @.submits-names.push: $name;
-        }
+        @.submits-names.push: $name unless @.submits-names.grep({ $_ eq $name });
 
         $.submits{$name} = %attrs if %attrs;
         $.submits{$name}{'type'} = 'submit' unless $.submits{$name}{'type'};
@@ -175,10 +173,19 @@ class Rakuwa::Form is Rakuwa::View {
         %.fields{$field_name}{'label'} = self.create_label($field_name) unless $.fields{$field_name}{'label'};
         %.fields{$field_name}{'html_label'} = '<label for="' ~ $.fields{$field_name}{'id'} ~ '">' ~ $.fields{$field_name}{'label'} ~ '</label>' unless $.fields{$field_name}{'html_label'};
         %.fields{$field_name}{'placeholder'} = %.fields{$field_name}{'label'} unless $.fields{$field_name}{'placeholder'};
-        %.fields{$field_name}{'value'} //= '' unless %.fields{$field_name}{'value'}:exists;
-        if $.request.query-hash{$field_name}:exists {
+
+        # Value handling
+        if ($.request.query-hash{$field_name}:exists && $.request.query-hash{$field_name} ne '') {
+            # If the field is in the query hash, use that value
             %.fields{$field_name}{'value'} = $.request.query-hash{$field_name};
+        } elsif (%.values{$field_name}:exists && %.values{$field_name} ne '') {
+            # If the field has a value in the values hash, use that
+            %.fields{$field_name}{'value'} = %.values{$field_name};
+        } else {
+            # Otherwise, set the value to an empty string if it doesn't exist
+            %.fields{$field_name}{'value'} = '' unless %.fields{$field_name}{'value'}:exists;
         }
+
 
         %.fields{$field_name}{'help'} //= '' unless %.fields{$field_name}{'help'}:exists;
         if (%.fields{$field_name}{'help'} ne '') {
