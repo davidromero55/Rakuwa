@@ -19,6 +19,8 @@ class Rakuwa::View {
     has $.request is rw;
     has Rakuwa::SessionObject $.session is rw = $!request.auth;
 
+    has @.buttons is rw = ();
+
     method render (%vars={}) {
         # Prepare the view for rendering
         self.prepare_for_render(%vars);
@@ -36,6 +38,8 @@ class Rakuwa::View {
 
         if $.status == 200 {
             my $layout = Rakuwa::Layout.new(:$.session);
+            self.page = %.page;
+            self.buttons = @.buttons;
             $.content = $layout.render(self);
         }
     }
@@ -72,11 +76,20 @@ class Rakuwa::View {
         if $onlystart {
             return "<{$tag} {$attrs}>";
         } else {
-            return "<{$tag} {$attrs}>{$content}</{$tag}}>";
+            return "<{$tag} {$attrs}>{$content}</{$tag}>";
         }
 
     }
 
+    method add-button (Str $label, Str $url, :$class = 'btn btn-sm btn-secondary', :$id = 'btn', :$icon = '') {
+        # Add a button to the view
+        @.buttons.push(self._tag('a', {
+            :href($url),
+            :type('button'),
+            :$class,
+            :$id,
+        }, "{$icon} {$label}"));
+    }
 
 
 }

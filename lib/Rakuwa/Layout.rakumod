@@ -18,7 +18,10 @@ class Rakuwa::Layout {
             }
         }
 
-
+        my $buttons = $view.buttons.join("");
+        if $buttons.chars > 0 {
+            $buttons = $view._tag('div',{:class('btn-group'),:role('group') },$buttons);
+        }
 
         my $TT = Template6.new();
         $TT.add-path(%conf<template><template_dir> ~ '/');
@@ -30,7 +33,8 @@ class Rakuwa::Layout {
                 :is-admin($.session.is-admin),
                 :role($.session.role),
                 :generator("{%conf<name>} {%conf<version>}"),
-                :apps(@apps),
+                :@apps,
+                :$buttons,
                 );
     }
 
