@@ -27,3 +27,7 @@ input[readonly] {
 .c-pointer {
     cursor: pointer;
 }
+
+.rw-logo {
+    height: 40px;
+}

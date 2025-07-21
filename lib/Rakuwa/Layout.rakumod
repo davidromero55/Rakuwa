@@ -20,7 +20,7 @@ class Rakuwa::Layout {
 
         my $buttons = $view.buttons.join("");
         if $buttons.chars > 0 {
-            $buttons = $view._tag('div',{:class('btn-group'),:role('group') },$buttons);
+            $buttons = $view._tag('div',{:class('btn-group btn-group-sm'),:role('group') },$buttons);
         }
 
         my $TT = Template6.new();
