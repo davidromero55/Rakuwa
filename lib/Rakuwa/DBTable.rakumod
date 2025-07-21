@@ -62,7 +62,7 @@ class Rakuwa::DBTable is Rakuwa::View {
     };
 
     has %.table-attrs is rw = {
-        :class("table table-striped table-bordered table-sm rounded-1"),
+        :class("table table-striped table-sm rounded-1"),
         :width("100%"),
         :align("center"),
         :cellspacing("0"),

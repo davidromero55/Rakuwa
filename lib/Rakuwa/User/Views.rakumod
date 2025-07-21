@@ -37,7 +37,9 @@ class Rakuwa::User::Views is Rakuwa::View {
     }
 
     method display_updatepassword () {
-            %.page<title> = 'Update Password';
+        self.add-button('Back', '/user', :icon('arrow_back'));
+
+        %.page<title> = 'Update Password';
             my $form = Rakuwa::Form.new(
                     :title('Update Password'),
                     :request($.request),
@@ -59,7 +61,9 @@ class Rakuwa::User::Views is Rakuwa::View {
     }
 
     method display_edit () {
-            %.page<title> = 'Update my details';
+        self.add-button('Back', '/user', :icon('arrow_back'));
+
+        %.page<title> = 'Update my details';
             my $form = Rakuwa::Form.new(
                     :title('Update my details'),
                     :request($.request),

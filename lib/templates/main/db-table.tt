@@ -1,4 +1,6 @@
 [% msg %]
+<div class="db-table-wrapper">
+[% IF caption ne "" %]<h2 class="db-table-caption">[% caption %]</h2>[% END %]
 [% table-start %]
 [% IF caption ne "" %]<caption>[% caption %]</caption>[% END %]
 <thead>
@@ -8,3 +10,4 @@
 [% details %]
 </tbody>
 </table>
+</div>

@@ -31,3 +31,25 @@ input[readonly] {
 .rw-logo {
     height: 40px;
 }
+
+.db-table-wrapper {
+    overflow-x: hidden;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.db-table-wrapper table td {
+    border-left: 1px solid #dee2e6;
+}
+
+.db-table-wrapper table td:first-child {
+    border-left: 0px;
+}
+
+.db-table-wrapper table th {
+    border-left: 1px solid #dee2e6;
+}
+
+.db-table-wrapper table th:first-child {
+    border-left: 0px;
+}
