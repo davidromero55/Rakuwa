@@ -61,9 +61,8 @@ class Rakuwa::User::Actions is Rakuwa::Action {
             return;
         }
 
-        my $db = get-db;
         # update the user's password in the database
-        my $result = $db.query("UPDATE users SET password = ? WHERE user_id = ?",
+        my $result = $.db.query("UPDATE users SET password = ? WHERE user_id = ?",
                 sha256-hex($new-password), $user-id);
 
         $.session.add-msg('success', "Password updated successfully.");

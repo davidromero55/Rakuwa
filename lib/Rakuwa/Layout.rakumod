@@ -1,20 +1,20 @@
 use Rakuwa::Conf;
 use Template6;
-use Rakuwa::DB;
-
 use Rakuwa::SessionObject;
 
 class Rakuwa::Layout {
     has $.template is rw = "layout.crotmp";
     has Rakuwa::SessionObject $.session is rw;
+    has $.db is rw;
+    has $.request is rw;
+
 
     method render ($view --> Str) {
-        my $db = get-db;
         my @apps;
         if ($.session.is-admin) {
-            @apps = $db.query("SELECT * FROM apps WHERE active=1").hashes;
+            @apps = $.db.query("SELECT * FROM apps WHERE active=1").hashes;
             for @apps -> %app {
-                %app{'menu'} = $db.query("SELECT * FROM menus WHERE app = ? ORDER BY sort_order", "Blog").hashes;
+                %app{'menu'} = $.db.query("SELECT * FROM menus WHERE app = ? ORDER BY sort_order", "Blog").hashes;
             }
         }
 

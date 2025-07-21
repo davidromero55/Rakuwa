@@ -83,7 +83,6 @@ class Rakuwa::DBTable is Rakuwa::View {
             return;
         }
         # Fetch data from the database based on the SQL query
-        my $db = get-db;
         my $sql = "SELECT " ~ %.query<select> ~ " FROM " ~ %.query<from>;
 
         if %.query<where>:exists {
@@ -102,7 +101,7 @@ class Rakuwa::DBTable is Rakuwa::View {
             $sql ~= " LIMIT " ~ %.query<limit>;
         }
 
-        my $statement = $db.db.prepare($sql);
+        my $statement = $.db.db.prepare($sql);
         my $result = $statement.execute;
         @!columns = $result.names;
         @!data = $result.hashes;

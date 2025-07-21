@@ -9,8 +9,7 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
     method display_home () {
         $.template    = 'user/display-home';
         %.page<title> = 'My Account';
-        my $db = get-db;
-        %.data<user> = $db.query("SELECT * FROM users WHERE user_id = ?", $.session.user-id).hash;
+        %.data<user> = $.db.query("SELECT * FROM users WHERE user_id = ?", $.session.user-id).hash;
     }
 
     method display_categories () {
@@ -46,10 +45,9 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
         my @submits = ('Save');
         my $category_id = 0;
         $category_id = Int(@.path[1]) if @.path[1];
-        my $db = get-db;
         my %category;
         if $category_id > 0 {
-            %category = $db.query("SELECT * FROM blog_categories WHERE category_id = ?", $category_id).hash;
+            %category = $.db.query("SELECT * FROM blog_categories WHERE category_id = ?", $category_id).hash;
             @submits.push('Delete');
         }
 
@@ -126,10 +124,9 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
         my @submits = ('Save');
         my $author_id = 0;
         $author_id = Int(@.path[1]) if @.path[1];
-        my $db = get-db;
         my %author;
         if $author_id > 0 {
-            %author = $db.query("SELECT * FROM blog_authors WHERE author_id = ?", $author_id).hash;
+            %author = $.db.query("SELECT * FROM blog_authors WHERE author_id = ?", $author_id).hash;
             @submits.push('Delete');
         }
 

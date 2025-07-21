@@ -9,7 +9,6 @@ class Rakuwa {
     has %.page is rw;
     has Int $.status is rw;
     has %.headers is rw;
-    has $.rdb is rw;
 
     method init () {
         $.status  = 200;
@@ -114,26 +113,6 @@ class Rakuwa {
 
     method get-main-layout (--> Rakuwa::Layout) {
         return Rakuwa::Layout.new;
-    }
-
-    method get_view_function_name (@path --> Str) {
-        # Get the view function name from the path
-        my $ViewName = "display_home";
-        with @path[0] {
-            $ViewName = "display_" ~ @path[0].lc;
-            $ViewName ~~ s:g/\W//; # Sanitize the function name
-        }
-        return $ViewName;
-    }
-
-    method get_action_function_name (@path --> Str) {
-        # Get the view function name from the path
-        my $ViewName = "do_home";
-        with @path[0] {
-            $ViewName = "do_" ~ @path[0].lc;
-            $ViewName ~~ s:g/\W//; # Sanitize the function name
-        }
-        return $ViewName;
     }
 
 }

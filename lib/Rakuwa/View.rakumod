@@ -2,6 +2,7 @@ use Rakuwa::Conf;
 use Rakuwa::Layout;
 use Template6;
 use Rakuwa::SessionObject;
+use Rakuwa::DB;
 
 class Rakuwa::View {
     has %.page is rw = {
@@ -17,6 +18,7 @@ class Rakuwa::View {
     };
     has @.path is rw = ();
     has $.request is rw;
+    has $.db is rw = get-db();
     has Rakuwa::SessionObject $.session is rw = $!request.auth;
 
     has @.buttons is rw = ();
@@ -37,7 +39,7 @@ class Rakuwa::View {
         }
 
         if $.status == 200 {
-            my $layout = Rakuwa::Layout.new(:$.session);
+            my $layout = Rakuwa::Layout.new(:$.session, :$.db, :$.request);
             self.page = %.page;
             self.buttons = @.buttons;
             $.content = $layout.render(self);
@@ -96,5 +98,34 @@ class Rakuwa::View {
         }, "{$icon_html}{$label}"));
     }
 
+    method exists (--> Bool) {
+        if (self.can("{self.get-view-function-name}")) {
+            return True;
+        }
+        return False;
+    }
+
+    method execute() {
+        # Execute the action function if it exists
+        my $view-function = self.get-view-function-name;
+        self."$view-function"();
+        self.render;
+        self.free;
+    }
+
+    method get-view-function-name ( --> Str) {
+        # Get the view function name from the path
+        my $ViewName = "display_home";
+        with @.path[0] {
+            $ViewName = "display_" ~ @.path[0].lc;
+            $ViewName ~~ s:g/\W//; # Sanitize the function name
+        }
+        return $ViewName;
+    }
+
+    method free () {
+        # Finalize the view, clean up resources if needed
+        $!db.finish;
+    }
 
 }

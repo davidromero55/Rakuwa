@@ -1,7 +1,6 @@
 use Cro::HTTP::Router;
 use Rakuwa;
 use Rakuwa::Session;
-use Rakuwa::DB;
 use Rakuwa::User::Views;
 use Rakuwa::User::Actions;
 
@@ -16,7 +15,6 @@ sub routes() is export {
         my $Rakuwa = Rakuwa.new();
         $Rakuwa.init();
 
-        before get-session();
 
         get -> {
             content 'text/html', "<h1> Rakuwa </h1>";
@@ -34,13 +32,13 @@ sub routes() is export {
         get -> 'templates', *@path {
             static 'lib/templates', @path;
         }
+        before get-session();
 
         include dashboard-routes($Rakuwa);
 
         include user-routes($Rakuwa);
 
         include blog-routes($Rakuwa);
-
 
     }
 

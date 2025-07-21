@@ -102,10 +102,43 @@ class Rakuwa::Action {
     method get-multipart-values(%multipart-params --> Hash) {
         my %params;
         for %multipart-params.kv -> $key, $value {
-            if $value.filename eq '' {
+
+            if $value.filename:exists {
+                # ignore files, they are handled separately
+            }else{
                 %params{$key} = $value.body-blob.decode('utf-8');
             }
         }
         return %params;
     }
+
+    method exists (--> Bool) {
+        if (self.can("{self.get-action-function-name}")) {
+                return True;
+        }
+        return False;
+    }
+
+    method execute(%params) {
+        # Execute the action function if it exists
+        my $action-function = self.get-action-function-name;
+        self."$action-function"(%params);
+        self.free;
+    }
+
+    method get-action-function-name ( --> Str) {
+        # Get the view function name from the path
+        my $ViewName = "do_home";
+        with @.path[0] {
+            $ViewName = "do_" ~ @.path[0].lc;
+            $ViewName ~~ s:g/\W//; # Sanitize the function name
+        }
+        return $ViewName;
+    }
+
+    method free {
+        # Finalize the view, clean up resources if needed
+        $!db.finish;
+    }
+
 }
