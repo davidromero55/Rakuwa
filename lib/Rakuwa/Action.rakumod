@@ -98,4 +98,14 @@ class Rakuwa::Action {
 
         return $string;
     }
+
+    method get-multipart-values(%multipart-params --> Hash) {
+        my %params;
+        for %multipart-params.kv -> $key, $value {
+            if $value.filename eq '' {
+                %params{$key} = $value.body-blob.decode('utf-8');
+            }
+        }
+        return %params;
+    }
 }

@@ -76,19 +76,24 @@ class Rakuwa::View {
         if $onlystart {
             return "<{$tag} {$attrs}>";
         } else {
+            if $tag eq 'img' {
+                return "<{$tag} {$attrs} />";
+            }
             return "<{$tag} {$attrs}>{$content}</{$tag}>";
         }
 
     }
 
     method add-button (Str $label, Str $url, :$class = 'btn btn-sm btn-secondary', :$id = 'btn', :$icon = '') {
-        # Add a button to the view
+        my $icon_html = '';
+        $icon_html = "<span class=\"material-symbols-outlined\">{$icon}</span> " if $icon ne '';
+
         @.buttons.push(self._tag('a', {
             :href($url),
             :type('button'),
             :$class,
             :$id,
-        }, "{$icon} {$label}"));
+        }, "{$icon_html}{$label}"));
     }
 
 
