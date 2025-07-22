@@ -11,10 +11,7 @@ use Rakuwa::Blog::Routes;
 
 sub routes() is export {
     route {
-
         my $Rakuwa = Rakuwa.new();
-        $Rakuwa.init();
-
 
         get -> {
             content 'text/html', "<h1> Rakuwa </h1>";
