@@ -301,11 +301,15 @@ class Rakuwa::Form is Rakuwa::View {
                 next if $key eq 'message';
                 next if $key eq 'options';
                 next if $key eq 'labels';
+                next if $key eq 'selectname';
                 if (%field{$key}:exists) {
                     $field_html ~= "$key=\"" ~ %field{$key} ~ "\" ";
                 }
             }
             $field_html ~= '>';
+            if (%field{'selectname'}:exists) {
+                $field_html ~= '<option value="">' ~ escape-html(%field{'selectname'}) ~ '</option>';
+            }
             for %field<options>.Array -> $option {
                 my $selected = '';
                 if ($option eq %field{'value'}) {
@@ -432,11 +436,15 @@ class Rakuwa::Form is Rakuwa::View {
             @submits-array.push: %.submits{$submit_name};
         }
 
+        # clone @fields-array into a hash using the name for hash keys
+        my %fields-hash = @fields-array.map({ $_<name> => $_ }).Hash;
+
         $.content = $TT.process($.template,
                 :title($.title),
                 :form_start($.form_start),
                 :form_end($.form_end),
                 :fields(@fields-array),
+                :%fields-hash,
                 :@hidden-fields,
                 :submits(@submits-array),
                 :msg(self.get-msgs),
