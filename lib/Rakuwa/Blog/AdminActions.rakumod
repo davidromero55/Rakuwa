@@ -6,16 +6,16 @@ use Digest::SHA256::Native;
 
 class Rakuwa::Blog::AdminActions is Rakuwa::Action {
 
-    method do_category (%params) {
-        if (! self.validate-csrf(%params<_csrf>)) {
+    method do_category () {
+        if (! self.validate-csrf(%.params<_csrf>)) {
             $.status = 'error';
             self.add-msg('warning', "Invalid CSRF token.");
             return;
         }
 
-        my $submit = %params<_submit> // '';
-        my $category_id = %params<category_id> // 0;
-        my $category = %params<category> // '';
+        my $submit = %.params<_submit> // '';
+        my $category_id = %.params<category_id> // 0;
+        my $category = %.params<category> // '';
         my $url = self.url-safe-string($category);
         if ($submit eq 'Save') {
             if $category_id == 0 {
@@ -41,28 +41,26 @@ class Rakuwa::Blog::AdminActions is Rakuwa::Action {
         $.redirect = '/blog-admin/categories';
     }
 
-    method do_author (%multipart-params) {
-        my $photo = %multipart-params<photo>;
-        my $file_name = self.save-image($photo,'blog-authors');
-        my %params = self.get-multipart-values(%multipart-params);
-        if (! self.validate-csrf(%params<_csrf>)) {
+    method do_author () {
+        my $file_name = self.save-image(%.params-files<photo>,'blog-authors');
+        if (! self.validate-csrf(%.params<_csrf>)) {
             $.status = 'error';
             self.add-msg('warning', "Invalid CSRF token.");
             return;
         }
 
-        my $submit = %params<_submit> // '';
-        my $author_id = %params<author_id> // 0;
-        my $name = %params<name> // '';
+        my $submit = %.params<_submit> // '';
+        my $author_id = %.params<author_id> // 0;
+        my $name = %.params<name> // '';
         my $url = self.url-safe-string($name);
         if ($submit eq 'Save') {
             if $author_id == 0 {
                 $.db.query("INSERT INTO blog_authors (name, email, photo, about, url) VALUES (?,?,?,?,?)",
-                        $name, %params<email>, $file_name, %params<about>, $url);
+                        $name, %.params<email>, $file_name, %.params<about>, $url);
                 $.session.add-msg('success', "Author '$name' created successfully.");
             } else {
                 $.db.query("UPDATE blog_authors SET name=?, email=?, about=?, url=? WHERE author_id = ?",
-                        $name, %params<email>, %params<about>, $url, $author_id);
+                        $name, %.params<email>, %.params<about>, $url, $author_id);
 
                 if $file_name.chars > 0 {
                     $.db.query("UPDATE blog_authors SET photo = ? WHERE author_id = ?", $file_name, $author_id);
@@ -79,5 +77,4 @@ class Rakuwa::Blog::AdminActions is Rakuwa::Action {
         }
         $.redirect = '/blog-admin/authors';
     }
-
 }

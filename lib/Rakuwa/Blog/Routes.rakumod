@@ -21,9 +21,9 @@ sub blog-routes($Rakuwa) is export {
 
         post -> LoggedIn $session, 'blog-admin',*@path {
             request-body -> (*%params) {
-                my $action = Rakuwa::Blog::AdminActions.new(:request(request), :$session, :@path);
+                my $action = Rakuwa::Blog::AdminActions.new(:request(request), :$session, :@path, :%params);
                 if $action.exists() {
-                    $action.execute(%params);
+                    $action.execute();
                     if ($action.redirect.chars > 0) {
                         redirect :see-other, $action.redirect;
                     }else {

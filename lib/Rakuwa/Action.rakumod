@@ -11,8 +11,36 @@ class Rakuwa::Action {
     };
     has @.path is rw = ();
     has $.request is rw;
+    has %.params is rw = {};
+    has %.params-files is rw = {};
     has $.db is rw = get-db();
-    has Rakuwa::SessionObject $.session is rw = $!request.auth; # Session object from the request
+    has Rakuwa::SessionObject $.session is rw;
+
+    submethod BUILD(:$request, :@path, :%params) {
+        $!request = $request;
+        @!path = @path;
+        $!session = $!request.auth;  # Initialize session object
+
+        if %params.elems > 0 {
+            for %params.kv -> $key, $value {
+                given $value.^name {
+                    when 'Cro::HTTP::Body::MultiPartFormData::Part' {
+                        if $value.filename:exists {
+                            say "File: $key, Filename: " ~ $value.filename;
+                            %!params-files{$key} = $value;
+                        } else {
+                            say "Param: $key, Value: " ~ $value.body-blob.decode('utf-8');
+                            %!params{$key} = $value.body-blob.decode('utf-8');
+                        }
+                    }
+                    default {
+                        say "Def Param: $key, Value: " ~ $value;
+                        %!params{$key} = $value;  # Keep the value as is
+                    }
+                }
+            }
+        }
+    }
 
     method add-msg(Str $type, Str $message, :$element = '') {
         $!request.auth.add-msg($type,$message, :$element);
@@ -23,8 +51,11 @@ class Rakuwa::Action {
     }
 
     method save-image ($image, Str $directory = '' --> Str) {
-        my $filename = $image.filename;
+        if (! $image.can('filename')) {
+            return "";  # Return empty string if the image object is invalid
+        }
 
+        my $filename = $image.filename;
         if $filename.chars == 0 {
             return "";  # Return empty string if the filename is invalid
         }
@@ -99,19 +130,6 @@ class Rakuwa::Action {
         return $string;
     }
 
-    method get-multipart-values(%multipart-params --> Hash) {
-        my %params;
-        for %multipart-params.kv -> $key, $value {
-
-            if $value.filename:exists {
-                # ignore files, they are handled separately
-            }else{
-                %params{$key} = $value.body-blob.decode('utf-8');
-            }
-        }
-        return %params;
-    }
-
     method exists (--> Bool) {
         if (self.can("{self.get-action-function-name}")) {
                 return True;
@@ -119,10 +137,10 @@ class Rakuwa::Action {
         return False;
     }
 
-    method execute(%params) {
+    method execute() {
         # Execute the action function if it exists
         my $action-function = self.get-action-function-name;
-        self."$action-function"(%params);
+        self."$action-function"();
         self.free;
     }
 

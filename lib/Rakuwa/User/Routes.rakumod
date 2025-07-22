@@ -16,8 +16,8 @@ sub user-routes($Rakuwa) is export {
 
         post -> 'user', 'login' {
             request-body -> (*%params) {
-                my $action = Rakuwa::User::Actions.new(:request(request), :path<login>);
-                $action.execute(%params);
+                my $action = Rakuwa::User::Actions.new(:request(request), :path(['login']), :%params);
+                $action.execute();
                 if ($action.redirect.chars > 0) {
                     redirect :see-other, $action.redirect;
                 } else {

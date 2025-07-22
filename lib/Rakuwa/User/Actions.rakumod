@@ -6,9 +6,9 @@ use Digest::SHA256::Native;
 
 class Rakuwa::User::Actions is Rakuwa::Action {
 
-    method do_login (%params) {
-        my $email = %params<email>;
-        my $password = %params<password>;
+    method do_login () {
+        my $email = %.params<email>;
+        my $password = %.params<password>;
 
         if !$email || !$password {
             $.status = 'error';
@@ -16,7 +16,7 @@ class Rakuwa::User::Actions is Rakuwa::Action {
             return;
         }
 
-        if (! self.validate-csrf(%params<_csrf>)) {
+        if (! self.validate-csrf(%.params<_csrf>)) {
             $.status = 'error';
             self.add-msg('warning', "Invalid CSRF token.");
             return;
@@ -40,13 +40,13 @@ class Rakuwa::User::Actions is Rakuwa::Action {
         }
     }
 
-    method do_updatepassword (%params) {
-        my $current-password = %params<current-password>;
-        my $new-password = %params<new-password>;
-        my $confirm-new-password = %params<confirm-new-password>;
+    method do_updatepassword () {
+        my $current-password = %.params<current-password>;
+        my $new-password = %.params<new-password>;
+        my $confirm-new-password = %.params<confirm-new-password>;
         my $user-id = $.session.user-id;
 
-        if (! self.validate-csrf(%params<_csrf>)) {
+        if (! self.validate-csrf(%.params<_csrf>)) {
             $.status = 'error';
             self.add-msg('warning', "Invalid CSRF token.");
             return;
@@ -83,14 +83,13 @@ class Rakuwa::User::Actions is Rakuwa::Action {
         $.redirect = '/user';  # Redirect to the home page
     }
 
-    method do_edit (%multipart-params) {
-        my $picture = %multipart-params<picture>;
+    method do_edit () {
+        my $picture = %.params-files<picture>;
         my $file_name = self.save-image($picture,'users');
-        my %params = self.get-multipart-values(%multipart-params);
 
-        my $name = %params<name>;
+        my $name = %.params<name>;
 
-        if (! self.validate-csrf(%params<_csrf>)) {
+        if (! self.validate-csrf(%.params<_csrf>)) {
             $.status = 'error';
             self.add-msg('warning', "Invalid CSRF token.");
             return;
