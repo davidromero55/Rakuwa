@@ -123,6 +123,21 @@ class Rakuwa::View {
         return $ViewName;
     }
 
+    method get-selectbox-data (Str $sql) {
+        my @data = $.db.query($sql).arrays;
+
+        my %data = {
+            :options([]),
+            :labels({}),
+        };
+        for @data -> @row {
+            my $value = @row[0];
+            my $label = @row[1];
+            %data<options>.push($value);
+            %data<labels>{$value} = $label;
+        }
+        return %data;
+    }
     method free () {
         # Finalize the view, clean up resources if needed
         $!db.finish;
