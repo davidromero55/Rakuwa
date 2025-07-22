@@ -84,7 +84,6 @@ class Rakuwa::DBTable is Rakuwa::View {
         # Fetch data from the database based on the SQL query
         if ($.request.query-hash{'rdbt_offset'}:exists) {
             $.offset = Int($.request.query-hash{'rdbt_offset'});
-            say "Offset set to: ", $.offset;
         }
         my $sql = "SELECT " ~ %.query<select> ~ " FROM " ~ %.query<from>;
 
@@ -99,7 +98,6 @@ class Rakuwa::DBTable is Rakuwa::View {
         if ( $.request.query-hash{'rdbt_order'}:exists ) {
             my $order_by = $.request.query-hash{'rdbt_order'};
             $order_by = Int($order_by) if $order_by ~~ Str && $order_by ~~ /^\d+$/;
-            say "Order by: ", $order_by;
             if $order_by ~~ Int {
                 $sql ~= " ORDER BY " ~ $order_by;
                 if $.request.query-hash{'rdbt_order_dir'}:exists {
@@ -157,16 +155,18 @@ class Rakuwa::DBTable is Rakuwa::View {
 
             if ($.auto-order) {
                 # Add sorting links if auto-order is enabled
+                my $rdbt_order = $.request.query-hash{'rdbt_order'} // '';
+                my $rdbt_order_dir = $.request.query-hash{'rdbt_order_dir'} // 'asc';
                 my $sort-icon = '';
-                if ($.request.query-hash{'rdbt_order'} eq $col-it) {
-                    if ($.request.query-hash{'rdbt_order_dir'} eq 'asc') {
+                if ($rdbt_order eq $col-it) {
+                    if ($rdbt_order_dir eq 'asc') {
                         $sort-icon = %.labels<link_down>;
                     } else {
                         $sort-icon = %.labels<link_up>;
                     }
                 }
                 $label = self._tag('a', {
-                    :href($.request.path ~ '?rdbt_offset=' ~ $.offset ~ '&rdbt_order=' ~ $col-it ~ '&rdbt_order_dir=' ~ ($.request.query-hash{'rdbt_order_dir'} eq 'asc' ?? 'desc' !! 'asc')),
+                    :href($.request.path ~ '?rdbt_offset=' ~ $.offset ~ '&rdbt_order=' ~ $col-it ~ '&rdbt_order_dir=' ~ ($rdbt_order_dir eq 'asc' ?? 'desc' !! 'asc')),
                     :class('zl_sort_link'),
                 }, $label ~ " " ~ $sort-icon);
             }
