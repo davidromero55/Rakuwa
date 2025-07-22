@@ -34,12 +34,12 @@ MySQL, and a simple authentication system.
 * Database access (MySQL)
 * Authentication
 * Sessions
-* Simple and easy to use
 * Lightweight and fast
+* Lists
 
 ### Short Term Goals
 
-* Lists
+* Lists - Conditional row styling, conditional column styling, column totals, counts, etc.
 * Simple CRUD generator
 * Api Rest
 * Installer
