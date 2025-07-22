@@ -29,7 +29,6 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
                 }),
                 :columns-align(<left left right>),
                 );
-        $table.init;
         $table.render;
         $.status = $table.status;
         $.content = $table.content;
