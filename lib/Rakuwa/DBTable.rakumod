@@ -11,7 +11,7 @@ class Rakuwa::DBTable is Rakuwa::View {
     has $.request is rw;
     has @.path is rw = ();
 
-    has $.auto_order is rw = True;
+    has $.auto-order is rw = True;
 
     has $.pagination is rw = True;
     has $.total-count is rw = 0;
@@ -96,7 +96,19 @@ class Rakuwa::DBTable is Rakuwa::View {
             $sql ~= " GROUP BY " ~ %.query<group_by>;
         }
 
-        if %.query<order_by>:exists {
+        if ( $.request.query-hash{'rdbt_order'}:exists ) {
+            my $order_by = $.request.query-hash{'rdbt_order'};
+            $order_by = Int($order_by) if $order_by ~~ Str && $order_by ~~ /^\d+$/;
+            say "Order by: ", $order_by;
+            if $order_by ~~ Int {
+                $sql ~= " ORDER BY " ~ $order_by;
+                if $.request.query-hash{'rdbt_order_dir'}:exists {
+                    if ($.request.query-hash{'rdbt_order_dir'} eq 'desc') {
+                        $sql ~= " DESC";
+                    }
+                }
+            }
+        } elsif (%.query<order_by>:exists) {
             $sql ~= " ORDER BY " ~ %.query<order_by>;
         }
 
@@ -128,9 +140,11 @@ class Rakuwa::DBTable is Rakuwa::View {
     method get-columns (-->Str) {
         # Prepare the columns for the table
         my $columns-str = '';
+        my $col-it = 0;
         for @!columns -> $col {
             if ($col eq $.key_column && $.hidde_key_column) {
                 # Skip hidden key column
+                $col-it++;
                 next;
             }
             my $label;
@@ -140,12 +154,24 @@ class Rakuwa::DBTable is Rakuwa::View {
                 $label = $col;
                 $label = $label.subst(/_/,' ', :g).subst(/^\w/, { $/.uc });
             }
-            $columns-str ~= "<th ";
-            for $.columns-attributes.kv -> $key, $value {
-                $columns-str ~= "$key=\"$value\" ";
-            }
 
-            $columns-str ~= ">" ~ $label ~ "</th>";
+            if ($.auto-order) {
+                # Add sorting links if auto-order is enabled
+                my $sort-icon = '';
+                if ($.request.query-hash{'rdbt_order'} eq $col-it) {
+                    if ($.request.query-hash{'rdbt_order_dir'} eq 'asc') {
+                        $sort-icon = %.labels<link_down>;
+                    } else {
+                        $sort-icon = %.labels<link_up>;
+                    }
+                }
+                $label = self._tag('a', {
+                    :href($.request.path ~ '?rdbt_offset=' ~ $.offset ~ '&rdbt_order=' ~ $col-it ~ '&rdbt_order_dir=' ~ ($.request.query-hash{'rdbt_order_dir'} eq 'asc' ?? 'desc' !! 'asc')),
+                    :class('zl_sort_link'),
+                }, $label ~ " " ~ $sort-icon);
+            }
+            $columns-str ~= self._tag('th', $.columns-attributes, $label);
+            $col-it++;
         }
         return $columns-str;
     }
