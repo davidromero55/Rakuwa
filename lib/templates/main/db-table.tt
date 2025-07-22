@@ -10,4 +10,19 @@
 [% details %]
 </tbody>
 </table>
+    <div class="row p-2">
+        <div class="col-md-6">
+            <ul class="pagination p-0 m-0 justify-content-start">
+                <li class="page-item disabled"><a class="page-link" href="#">[% pagination.records %]</a></li>
+                <li class="page-item disabled"><a class="page-link" href="#">[% pagination.page %]</a></li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="pagination p-0 m-0 justify-content-end">
+                [% pagination.pages %]
+            </ul>
+        </div>
+    </div>
+
+
 </div>

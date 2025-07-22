@@ -83,13 +83,13 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
                     :select("author_id, photo, name, email, url, entries"),
                     :from("blog_authors"),
                     :order_by("name"),
+                    :limit(30),
                 }),
                 :links({
                     :location('/blog-admin/author'),
                 }),
                 :columns-align(<center left left left right>),
                 );
-        $table.init;
         $table.get-data;
         for $table.data -> %row {
             if (%row<photo>:exists && %row<photo> ne '') {
@@ -109,6 +109,7 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
             }
         }
 
+        $table.set-column-label('name', 'Author Name');
         $table.render;
         $.status = $table.status;
         $.content = $table.content;

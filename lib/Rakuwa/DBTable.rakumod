@@ -7,21 +7,24 @@ use HTML::Escape;
 class Rakuwa::DBTable is Rakuwa::View {
     has $.id is rw = "";
     has Str $.title is rw = '';
-    has $.name is rw = "Rakuwa::DBTable";
     has $.template is rw = 'db-table';
     has $.request is rw;
     has @.path is rw = ();
 
     has $.auto_order is rw = True;
+
     has $.pagination is rw = True;
+    has $.total-count is rw = 0;
+    has $.offset is rw= 0;
     has $.nav_pages is rw = 5;
-    has %.custom_labels is rw = {};
+
     has $.key_column is rw = '';
     has $.hidde_key_column is rw = True;
-    has $.columns-attributes is rw = {
-        :class("text-center"),
-    };
+
+    has $.columns-attributes is rw = { :class("text-center") };
     has @.columns-align is rw = ();
+    has %.columns-labels is rw = {};
+
     has %.detail is rw = {
         :Tr({
             :params_a({:class("zl_row_a")}),
@@ -35,6 +38,7 @@ class Rakuwa::DBTable is Rakuwa::View {
         :class("zl_no_data"),
         :align("center"),
     };
+
     has %.labels is rw = {
         :page_of("Page _PAGE_ of _OF_"),
         :no_data("No records found"),
@@ -44,7 +48,6 @@ class Rakuwa::DBTable is Rakuwa::View {
         :previous_page("&laquo;"),
         :number_of_rows("_NUMBER_ records"),
     };
-    has $.display_rows_total is rw = True;
 
     has @.data;
     has %.query is rw = {
@@ -53,7 +56,7 @@ class Rakuwa::DBTable is Rakuwa::View {
         :where(""),
         :order_by(""),
         :group_by(""),
-        :limit(0),
+        :limit(30),
     };
 
     has %.links is rw = {
@@ -62,7 +65,7 @@ class Rakuwa::DBTable is Rakuwa::View {
     };
 
     has %.table-attrs is rw = {
-        :class("table table-striped table-sm rounded-1"),
+        :class("table table-striped table-sm m-0"),
         :width("100%"),
         :align("center"),
         :cellspacing("0"),
@@ -70,19 +73,19 @@ class Rakuwa::DBTable is Rakuwa::View {
     has $.caption is rw = '';
     has @.columns = [];
     has $.rows_details = '';
-    has $.pagination-details = '';
 
-    method init () {
-
-
-    }
 
     method get-data () {
         if (@.data) {
             # Data already fetched, no need to fetch again
             return;
         }
+
         # Fetch data from the database based on the SQL query
+        if ($.request.query-hash{'rdbt_offset'}:exists) {
+            $.offset = Int($.request.query-hash{'rdbt_offset'});
+            say "Offset set to: ", $.offset;
+        }
         my $sql = "SELECT " ~ %.query<select> ~ " FROM " ~ %.query<from>;
 
         if %.query<where>:exists {
@@ -97,14 +100,29 @@ class Rakuwa::DBTable is Rakuwa::View {
             $sql ~= " ORDER BY " ~ %.query<order_by>;
         }
 
-        if %.query<limit>:exists && %.query<limit> > 0 {
-            $sql ~= " LIMIT " ~ %.query<limit>;
+        $sql ~= " LIMIT " ~ (%.query<limit> // 30);
+        if $.offset > 0 {
+            $sql ~= " OFFSET " ~ $.offset;
         }
 
         my $statement = $.db.db.prepare($sql);
         my $result = $statement.execute;
         @!columns = $result.names;
         @!data = $result.hashes;
+
+        if ($.pagination) {
+            my $sql-count = "SELECT COUNT(*) FROM " ~ %.query<from>;
+            if %.query<where>:exists {
+                $sql-count ~= " WHERE " ~ %.query<where>;
+            }
+            if %.query<group_by>:exists {
+                $sql-count ~= " GROUP BY " ~ %.query<group_by>;
+            }
+
+            $.total-count = $.db.query($sql-count).value;
+        }
+
+        $.free;
     }
 
     method get-columns (-->Str) {
@@ -116,8 +134,8 @@ class Rakuwa::DBTable is Rakuwa::View {
                 next;
             }
             my $label;
-            if (%.custom_labels{$col}:exists) {
-                $label = %.custom_labels{$col};
+            if (%.columns-labels{$col}:exists) {
+                $label = %.columns-labels{$col};
             } else {
                 $label = $col;
                 $label = $label.subst(/_/,' ', :g).subst(/^\w/, { $/.uc });
@@ -178,6 +196,49 @@ class Rakuwa::DBTable is Rakuwa::View {
         return self._tag('table', %.table-attrs, '',:onlystart);
     }
 
+    method get-pagination ( --> Hash) {
+        my %pagination := {
+            :records(""),
+            :page(""),
+            :pages("")
+        };
+
+        # return early if pagination is not enabled or no records found
+        if (! $.pagination || $.total-count == 0) {
+            return %pagination;
+        }
+
+        my $limit = %.query<limit> // 30;
+        my $pagination-str = '';
+        my $current-page = Int($.offset / $limit);
+        my $total-pages = Int($.total-count / $limit) + 1;
+        my $path = $.request.path;
+
+        if ($current-page > 0) {
+            $pagination-str ~= self._tag('li', { :class('page-item') },
+                    self._tag('a', {
+                    :href($path ~ '?rdbt_offset=' ~ ($current-page - 1) * $limit),
+                    :class('page-link'),
+                }, %.labels<previous_page>));
+        }
+        $pagination-str ~= self._tag('li', { :class('page-item disabled') },
+            self._tag('a',{:href('#'), :class('page-link')}, ($current-page + 1))
+                );
+        if ($current-page < $total-pages - 1) {
+            $pagination-str ~= self._tag('li', { :class('page-item') },
+                self._tag('a', {
+                    :href($path ~ '?rdbt_offset=' ~ ($current-page + 1) * $limit),
+                    :class('page-link'),
+                }, %.labels<next_page>));
+        }
+
+        %pagination<pages> = $pagination-str;
+        %pagination<records> = %.labels<number_of_rows>.subst(/_NUMBER_/, @.data.elems);
+        %pagination<page> = %.labels<page_of>.subst(/_PAGE_/, $current-page + 1).subst(/_OF_/, $total-pages);
+
+        return %pagination;
+    }
+
     method render (%vars={}) {
         # Prepare the view for rendering
 
@@ -195,9 +256,14 @@ class Rakuwa::DBTable is Rakuwa::View {
                 :caption($.caption),
                 :columns(self.get-columns),
                 :details(self.get-details),
-                :pagination($.pagination),
+                :pagination($.get-pagination),
                 :debug(%conf<debug>)
                 );
+
     }
 
+    method set-column-label(Str $column, Str $label) {
+        # Set a custom label for a specific column
+        %.columns-labels{$column} = $label;
+    }
 }
