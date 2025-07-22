@@ -15,7 +15,7 @@
     <meta name="keywords" content="[% page.keywords %]">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark nav-menu shadow-sm">
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark nav-menu">
     <div class="container">
         <a class="navbar-brand" href="/"><img src="/assets/img/rakuwa64.png" class="rw-logo" /></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,8 +80,7 @@
         </div>
     </div>
 </nav>
-<br /><br /><br /><br />
-<div class="container-fluid shadow-sm bg-light">
+<div class="container-fluid shadow-sm bg-light" style="margin-top: 66px;">
     <div class="container">
         <div class="row mb-1">
             <div class="col-md-6">
