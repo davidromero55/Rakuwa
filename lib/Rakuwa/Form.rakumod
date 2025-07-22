@@ -184,9 +184,20 @@ class Rakuwa::Form is Rakuwa::View {
         if ($.request.query-hash{$field_name}:exists && $.request.query-hash{$field_name} ne '') {
             # If the field is in the query hash, use that value
             %.fields{$field_name}{'value'} = $.request.query-hash{$field_name};
-        } elsif (%.values{$field_name}:exists && %.values{$field_name} ne '') {
+        } elsif (%.values{$field_name}:exists) {
             # If the field has a value in the values hash, use that
-            %.fields{$field_name}{'value'} = %.values{$field_name};
+            # Check Buf[uint8] or Str
+            if %.values{$field_name} ~~ Buf {
+                # If the value is a Buf, decode it to Str
+                %.fields{$field_name}{'value'} = %.values{$field_name}.decode('utf-8');
+            } elsif %.values{$field_name} ~~ Str {
+                # If the value is already a Str, use it directly
+                %.fields{$field_name}{'value'} = %.values{$field_name};
+            } else {
+                # If the value is neither, just use it as is
+                %.fields{$field_name}{'value'} = %.values{$field_name}.Str;
+
+            }
         } else {
             # Otherwise, set the value to an empty string if it doesn't exist
             %.fields{$field_name}{'value'} = '' unless %.fields{$field_name}{'value'}:exists;

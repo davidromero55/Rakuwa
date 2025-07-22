@@ -163,32 +163,28 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
                 :path(@.path),
                 :key_column('entry_id'),
                 :query({
-                    :select("entry_id, date, title, author_id, publish, '' AS actions"),
-                    :from("blog_entries"),
+                    :select("e.entry_id, e.date, e.title, a.name AS author, e.publish, '' AS actions"),
+                    :from("blog_entries e LEFT JOIN blog_authors a ON e.author_id = a.author_id"),
                     :order_by("date DESC"),
                     :limit(30),
                 }),
                 :columns-align(<center left left center center>),
                 );
-#        $table.get-data;
-#        for $table.data -> %row {
-#            if (%row<photo>:exists && %row<photo> ne '') {
-#                %row<photo> = self._tag('img', {
-#                    :src("/data/blog-authors/" ~ %row<photo>), :class('img-thumbnail'),
-#                    :style('width: 50px; height: 50px;'),
-#                    :alt(%row<name> // 'Author Photo'),
-#                    :title(%row<name> // 'Author Photo')
-#                });
-#            } else {
-#                %row<photo> = self._tag('img', {
-#                    :src("/assets/img/rakuwa64.png"), :class('img-thumbnail'),
-#                    :style('width: 50px; height: 50px;'),
-#                    :alt('Default Author Photo'),
-#                    :title('Default Author Photo')
-#                });
-#            }
-#        }
-#        $table.set-column-label('name', 'Author Name');
+        $table.get-data;
+        for $table.data -> %row {
+            %row<actions> = self._tag('a', {
+                :href("/blog-admin/entry/" ~ %row<entry_id>),
+                :class('btn btn-sm btn-secondary'),
+                :title('Edit Entry'),
+                :style('margin-right: 5px;')
+            }, self._tag('span', {:class('material-symbols-outlined')}, 'edit'));
+
+            if (%row<publish> eq 1) {
+                %row<publish> = 'Yes';
+            } else {
+                %row<publish> = 'No';
+            }
+        }
 
         $table.render;
         $.status = $table.status;
