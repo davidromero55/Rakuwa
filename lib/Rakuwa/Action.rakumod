@@ -136,6 +136,16 @@ class Rakuwa::Action {
         return $ViewName;
     }
 
+    method validate-csrf(Str $token --> Bool) {
+        # Validate the CSRF token
+        if $token eq $!session.csrf-token {
+            return True;
+        } else {
+            self.add-msg('error', 'Invalid CSRF token.');
+            return False;
+        }
+    }
+
     method free {
         # Finalize the view, clean up resources if needed
         $!db.finish;

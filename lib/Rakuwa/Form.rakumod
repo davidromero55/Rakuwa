@@ -2,6 +2,7 @@ use Rakuwa::Conf;
 use Rakuwa::View;
 use Template6;
 use HTML::Escape;
+use Digest::SHA256::Native;
 
 class Rakuwa::Form is Rakuwa::View {
     has $.id is rw = "";
@@ -72,6 +73,11 @@ class Rakuwa::Form is Rakuwa::View {
         # Control fields
         self.field('_submit', {:type('hidden'), :value('')});
         self.field('_submitted', {:type('hidden'), :value($.id)});
+
+        # CSRF token
+        my $csrf_token = sha256-hex(%conf<security><csrf_token> ~ $.session.user-id ~ time);
+        $.session.csrf-token = $csrf_token;
+        self.field('_csrf', {:type('hidden'), :value($csrf_token)});
 
         # Get errors messages if any
         %.field_message = {};

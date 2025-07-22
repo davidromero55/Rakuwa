@@ -36,7 +36,7 @@ our %conf is export = (
 
     :security({
         :secret_key('tu-clave-secreta-muy-larga-y-segura'),
-        :csrf_token(''),
+        :csrf_token('your-csrf-token'),
         :password_min_length(8),
     }),
 );

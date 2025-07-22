@@ -7,6 +7,12 @@ use Digest::SHA256::Native;
 class Rakuwa::Blog::AdminActions is Rakuwa::Action {
 
     method do_category (%params) {
+        if (! self.validate-csrf(%params<_csrf>)) {
+            $.status = 'error';
+            self.add-msg('warning', "Invalid CSRF token.");
+            return;
+        }
+
         my $submit = %params<_submit> // '';
         my $category_id = %params<category_id> // 0;
         my $category = %params<category> // '';
@@ -39,6 +45,11 @@ class Rakuwa::Blog::AdminActions is Rakuwa::Action {
         my $photo = %multipart-params<photo>;
         my $file_name = self.save-image($photo,'blog-authors');
         my %params = self.get-multipart-values(%multipart-params);
+        if (! self.validate-csrf(%params<_csrf>)) {
+            $.status = 'error';
+            self.add-msg('warning', "Invalid CSRF token.");
+            return;
+        }
 
         my $submit = %params<_submit> // '';
         my $author_id = %params<author_id> // 0;

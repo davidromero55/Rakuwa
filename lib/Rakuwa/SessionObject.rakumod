@@ -8,7 +8,7 @@ class Rakuwa::SessionObject does Cro::HTTP::Auth does JSON::Class {
     has Str $.user-picture is rw = '';
     has Int $.is-admin is rw = 0;
     has Str $.role is rw = 'guest';
-
+    has Str $.csrf-token is rw = '';
     has @.messages = [];
 
     method is-logged-in(--> Bool) {

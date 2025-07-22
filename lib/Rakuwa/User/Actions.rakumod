@@ -16,6 +16,12 @@ class Rakuwa::User::Actions is Rakuwa::Action {
             return;
         }
 
+        if (! self.validate-csrf(%params<_csrf>)) {
+            $.status = 'error';
+            self.add-msg('warning', "Invalid CSRF token.");
+            return;
+        }
+
         my %user = $.db.query("SELECT * FROM users WHERE email = ? AND password=? ", $email, sha256-hex($password) ).hash;
         if %user {
             # Here you would normally check the password, but for simplicity, we assume it's correct
@@ -39,6 +45,12 @@ class Rakuwa::User::Actions is Rakuwa::Action {
         my $new-password = %params<new-password>;
         my $confirm-new-password = %params<confirm-new-password>;
         my $user-id = $.session.user-id;
+
+        if (! self.validate-csrf(%params<_csrf>)) {
+            $.status = 'error';
+            self.add-msg('warning', "Invalid CSRF token.");
+            return;
+        }
 
         # Check if passwords match
         if $new-password ne $confirm-new-password {
@@ -71,10 +83,18 @@ class Rakuwa::User::Actions is Rakuwa::Action {
         $.redirect = '/user';  # Redirect to the home page
     }
 
-    method do_edit (%params) {
-        my $name = %params<name>.body-blob.decode('utf-8');
-        my $picture = %params<picture>;
+    method do_edit (%multipart-params) {
+        my $picture = %multipart-params<picture>;
         my $file_name = self.save-image($picture,'users');
+        my %params = self.get-multipart-values(%multipart-params);
+
+        my $name = %params<name>;
+
+        if (! self.validate-csrf(%params<_csrf>)) {
+            $.status = 'error';
+            self.add-msg('warning', "Invalid CSRF token.");
+            return;
+        }
 
         my $user_id = $.session.user-id;
         try {
