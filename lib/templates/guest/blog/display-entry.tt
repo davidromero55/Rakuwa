@@ -1,0 +1,24 @@
+[% set entry = data.entry %]
+<div class="row">
+    <div class="col-md-12 blog-entry">
+        <div class="card shadow mt-1 mb-5">
+            <div class="row">
+                <div class="col-md-12 text-end pt-4 pb-0 px-5">
+                    <span class="entry-date">[% entry.date %]</span>
+                </div>
+            </div>
+            <div class="card-body p-5">
+                <h2>[% entry.title %]</h2>
+                <p class="entry-content">
+                [% entry.content %]
+                </p>
+                <hr class="mt-3" />
+                <div class="entry-author">
+
+
+                </div>
+                <hr class="mt-3 mb-5" />
+            </div>
+        </div>
+    </div>
+</div>

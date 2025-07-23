@@ -41,13 +41,13 @@ sub blog-routes($Rakuwa) is export {
             }
         }
 
-        get -> 'blog',*@path {
-            my $view = Rakuwa::Blog::Views.new(:request(request), :@path);
+        get -> Session $session, 'blog',*@path {
+            my $view = Rakuwa::Blog::Views.new(:request(request), :@path, :$session, :template-dir('guest'));
             if $view.exists() {
                 $view.execute();
                 content 'text/html', $view.content;
-            }else{
-                not-found 'text/html', $Rakuwa.not-found("View object not found.");
+            } else {
+                not-found 'text/html', $Rakuwa.not-found("View object not found." ~ @path.join('/'));
             }
         }
 

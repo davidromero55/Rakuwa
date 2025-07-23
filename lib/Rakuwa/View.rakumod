@@ -13,6 +13,7 @@ class Rakuwa::View {
     has Int $.status is rw = 0; # Default status code
     has %.headers is rw;
     has $.content is rw = "";
+    has $.template-dir is rw = 'main';
     has $.template is rw = ""; # Default template
     has %.data is rw = {
     };
@@ -30,7 +31,7 @@ class Rakuwa::View {
         if $.status == 0 {
             $.status = 200; # Default status code
             my $TT = Template6.new();
-            $TT.add-path(%conf<template><template_dir> ~ '/');
+            $TT.add-path(%conf<template><template_dir> ~ '/' ~ $.template-dir ~ '/');
             $.content = $TT.process(self.template,
                     :data(%.data),
                     :page(%.page),
@@ -38,8 +39,8 @@ class Rakuwa::View {
                     );
         }
 
-        if $.status == 200 {
-            my $layout = Rakuwa::Layout.new(:$.session, :$.db, :$.request);
+        if $.status == 200 || $.status == 404 {
+            my $layout = Rakuwa::Layout.new(:$.session, :$.db, :$.request, :$.template-dir);
             self.page = %.page;
             self.buttons = @.buttons;
             $.content = $layout.render(self);
@@ -124,19 +125,19 @@ class Rakuwa::View {
     }
 
     method get-selectbox-data (Str $sql) {
-        my @data = $.db.query($sql).arrays;
+        my @select-data = $.db.query($sql).arrays;
 
-        my %data = {
+        my %select-data := {
             :options([]),
             :labels({}),
         };
-        for @data -> @row {
+        for @select-data -> @row {
             my $value = @row[0];
             my $label = @row[1];
-            %data<options>.push($value);
-            %data<labels>{$value} = $label;
+            %select-data<options>.push($value);
+            %select-data<labels>{$value} = $label;
         }
-        return %data;
+        return %select-data;
     }
     method free () {
         # Finalize the view, clean up resources if needed

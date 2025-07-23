@@ -163,7 +163,7 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
                 :path(@.path),
                 :key_column('entry_id'),
                 :query({
-                    :select("e.entry_id, e.date, e.title, a.name AS author, e.publish, '' AS actions"),
+                    :select("e.entry_id, e.date, e.title, a.name AS author, e.publish, e.url AS actions"),
                     :from("blog_entries e LEFT JOIN blog_authors a ON e.author_id = a.author_id"),
                     :order_by("date DESC"),
                     :limit(30),
@@ -177,7 +177,13 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
                 :class('btn btn-sm btn-secondary'),
                 :title('Edit Entry'),
                 :style('margin-right: 5px;')
-            }, self._tag('span', {:class('material-symbols-outlined')}, 'edit'));
+            }, self._tag('span', {:class('material-symbols-outlined')}, 'edit'))
+            ~ self._tag('a', {
+                :href("/blog/" ~ %row<actions>),
+                :class('btn btn-sm btn-secondary'),
+                :title('View Entry'),
+                :target('_blank'),
+            }, self._tag('span', {:class('material-symbols-outlined')}, 'open_in_new')) ;
 
             if (%row<publish> eq 1) {
                 %row<publish> = 'Yes';

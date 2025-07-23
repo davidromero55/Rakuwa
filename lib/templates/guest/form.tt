@@ -1,0 +1,55 @@
+<div class="row  justify-content-center">
+    <div id="" class="col-12 col-sm-12 col-md-10 col-lg-8 col-xlg-6">
+        <div class="card">
+            [% IF title %]<div class="card-header text-center"><h3>[% title %]</h3></div>[% END %]
+            <div style="padding-top:30px" class="card-body">
+                [% form_start %]
+                <div class="row form-group form-row">
+                    [% for hidden-field in hidden-fields %]
+                    [% hidden-field.field %]
+                    [% end %]
+                    [% for field in fields %]
+                    [% IF field.type eq "checkbox" %]
+                    [% IF field.role eq 'switch' %]
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check form-switch">
+                            [% field.field %]
+                            [% field.html_label %]
+                            [% field.message %]
+                            [% field.help %]
+                            [% field.error %]
+                        </div>
+                    </div>
+                    [% ELSE %]
+                    <div class="col-md-12 mb-3">
+                        [% field.field %]
+                        [% field.html_label %]
+                        [% field.message %]
+                        [% field.help %]
+                        [% field.error %]
+                    </div>
+                    [% END %]
+                    [% ELSE %]
+                    <div class="col-md-12 mb-3">
+                        [% field.html_label %]
+                        [% field.field %]
+                        [% field.message %]
+                        [% field.help %]
+                        [% field.error %]
+                    </div>
+                    [% END %]
+                    [% end %]
+                </div>
+                [% msg %]
+                <div class="row form-group form-row">
+                    <div class="col-md-12 mb-3 text-end">
+                        [% for submit in submits %]
+                        [% submit.submit %]
+                        [% end %]
+                    </div>
+                </div>
+                [% form_end %]
+            </div>
+        </div>
+    </div>
+</div>

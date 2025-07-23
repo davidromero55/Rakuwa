@@ -429,8 +429,8 @@ class Rakuwa::Form is Rakuwa::View {
         self.prepare_fields;
 
         $.status = 200;
-        my $TT = Template6.new(:include-path([%conf<template><template_dir> ~ '/']));
-        $TT.add-path(%conf<template><template_dir> ~ '/');
+        my $TT = Template6.new();
+        $TT.add-path(%conf<template><template_dir> ~ '/' ~ $.template-dir ~ '/');
 
         my @fields-array;
         my @hidden-fields;

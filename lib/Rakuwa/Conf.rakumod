@@ -29,7 +29,7 @@ our %conf is export = (
     }),
 
     :template({
-        :template_dir('lib/templates/main'),
+        :template_dir('lib/templates'),
         :cache,
         :auto_reload,
     }),

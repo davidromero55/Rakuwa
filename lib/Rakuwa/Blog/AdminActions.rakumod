@@ -79,14 +79,12 @@ class Rakuwa::Blog::AdminActions is Rakuwa::Action {
     }
 
     method do_entry () {
-        my $file_name = self.save-image(%.params-files<image>,'blog-entries');
+        my $file_name = self.save-image(%.params-files<image>,'blog');
         if (! self.validate-csrf(%.params<_csrf>)) {
             $.status = 'error';
             self.add-msg('warning', "Invalid CSRF token.");
             return;
         }
-#        INSERT INTO `rakuwa`.`blog_entries`
-#url, date, title, description, content, publish, image, keywords, author_id
 
         my $submit = %.params<_submit> // '';
         my $entry_id = %.params<entry_id> // 0;

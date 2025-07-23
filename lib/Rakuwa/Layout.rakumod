@@ -3,6 +3,8 @@ use Template6;
 use Rakuwa::SessionObject;
 
 class Rakuwa::Layout {
+
+    has $.template-dir is rw = 'main';
     has $.template is rw = "layout.crotmp";
     has Rakuwa::SessionObject $.session is rw;
     has $.db is rw;
@@ -24,7 +26,7 @@ class Rakuwa::Layout {
         }
 
         my $TT = Template6.new();
-        $TT.add-path(%conf<template><template_dir> ~ '/');
+        $TT.add-path(%conf<template><template_dir> ~ '/' ~ $.template-dir ~ '/');
         return $TT.process("layout",
                 :page($view.page),
                 :content($view.content),
