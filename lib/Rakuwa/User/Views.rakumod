@@ -1,7 +1,6 @@
 use Rakuwa::Conf;
 use Rakuwa::View;
 use Rakuwa::Form;
-use DB::MySQL;
 use Rakuwa::DB;
 
 class Rakuwa::User::Views is Rakuwa::View {

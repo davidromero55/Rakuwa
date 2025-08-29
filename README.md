@@ -31,7 +31,7 @@ MySQL, and a simple authentication system.
 * Routing
 * Templates (Template6)
 * Forms
-* Database access (MySQL)
+* Database access (SQLite)
 * Authentication
 * Sessions
 * Lightweight and fast
@@ -47,7 +47,7 @@ MySQL, and a simple authentication system.
 ### Long Term Goals
 
 * Plugins, etc.
-* Multiple database engines (Currently only supports MySQL)
+* Multiple database engines (Currently only supports SQLite)
 
 AUTHOR
 ======
