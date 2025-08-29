@@ -4,6 +4,7 @@ lib/.precomp/*
 *.iml
 lib/Users/*
 lib/data/*
+lib/db/*
 lib:
 .precomp
 .DS_Store

@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     default-libmysqlclient-dev \
     build-essential \
+    libsqlite3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Crea y establece directorio de trabajo
@@ -27,6 +28,8 @@ RUN zef install --/test JSON::Class
 RUN zef install --/test Cro::HTTP::Session::MySQL
 RUN zef install --/test HTML::Escape
 RUN zef install --/test Digest::SHA256::Native
+RUN zef install --/test DB::SQLite
+RUN zef install --/test Cro::HTTP::Session::SQLite
 
 # Instala las dependencias de prueba
 RUN zef install --deps-only --/test Test::More Test::Harness

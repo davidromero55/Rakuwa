@@ -8,7 +8,7 @@ class Rakuwa::Blog::Views is Rakuwa::View {
     method display_home () {
         $.template    = 'blog/display-home';
         %.data<entries> = $.db.query(
-            "SELECT e.title, e.description, e.url, DATE_FORMAT(e.date,'%M %d, %Y') AS date, e.image, a.name AS author_name, a.photo AS author_photo "
+            "SELECT e.title, e.description, e.url, STRFTIME('%B %d, %Y', e.date) AS date, e.image, a.name AS author_name, a.photo AS author_photo "
             ~ "FROM blog_entries e "
             ~ "LEFT JOIN blog_authors a ON e.author_id = a.author_id "
             ~ "WHERE e.publish = 1 "
@@ -24,7 +24,7 @@ class Rakuwa::Blog::Views is Rakuwa::View {
 
         # Decode the entry fields if they are in bytes
         # Todo: Manage encoding from db module
-        %entry<content> = %entry<content>.decode('utf-8');
+#        %entry<content> = %entry<content>.decode('utf-8');
         %entry<content> = %entry<content>.subst("\n", "<br>", :g);
 
         %.data<entry> = %entry;

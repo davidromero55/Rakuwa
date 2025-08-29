@@ -1,21 +1,24 @@
 unit module Rakuwa::DB;
 
 use Rakuwa::Conf;
-use DB::MySQL;
+use DB::SQLite;
+# use DB::MySQL;
 
 my $db;
 
 sub init-db is export {
 
-    $db = DB::MySQL.new(
-        :host(%conf<db><host>),
-        :port(%conf<db><port>),
-        :user(%conf<db><user>),
-        :password(%conf<db><password>),
-        :database(%conf<db><database>),
-        :charset(%conf<db><charset>),
-        :use-socket(%conf<db><use_socket> // False)
-        );
+    $db = DB::SQLite.new(filename => %conf<db><filename>);
+
+    # $db = DB::MySQL.new(
+    #     :host(%conf<db><host>),
+    #     :port(%conf<db><port>),
+    #     :user(%conf<db><user>),
+    #     :password(%conf<db><password>),
+    #     :database(%conf<db><database>),
+    #     :charset(%conf<db><charset>),
+    #     :use-socket(%conf<db><use_socket> // False)
+    #     );
 }
 
 sub get-db is export {
