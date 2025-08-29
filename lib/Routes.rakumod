@@ -6,6 +6,7 @@ use Rakuwa::User::Actions;
 
 # Rakuwa Routes
 use Rakuwa::Dashboard::Routes;
+use Rakuwa::SessionObject;
 use Rakuwa::User::Routes;
 use Rakuwa::Blog::Routes;
 
@@ -13,8 +14,14 @@ sub routes() is export {
     route {
         my $Rakuwa = Rakuwa.new();
 
-        get -> {
-            content 'text/html', "<h1> Rakuwa </h1>";
+        get -> Session $session {
+            my $view = Rakuwa::Blog::Views.new(:request(request), :path([]), :$session, :template-dir('guest'));
+            if $view.exists() {
+                $view.execute();
+                content 'text/html', $view.content;
+            } else {
+                not-found 'text/html', $Rakuwa.not-found("View object not found.");
+            }
         }
         get -> 'favicon.ico' {
             # return a 404 for favicon.ico

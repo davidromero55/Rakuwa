@@ -1,0 +1,41 @@
+{
+    "name": "Rakuwa",
+    "description": "Raku Web Application Framework",
+    "version": "0.1",
+    "domain": "localhost",
+
+    "port": 5000,
+    "debug": true,
+    "timezone": "America/Mexico_City",
+    "data_directory": "lib/data/",
+
+    "db": {
+      "host": "host.docker.internal",
+      "port": 3306,
+      "user": "rakuwa",
+      "password": "my-strong-password",
+      "database": "rakuwa",
+      "charset": "utf8mb4",
+      "use_socket": false
+    },
+
+    "session": {
+      "name": "RAKUWA_SESSION",
+      "max_age": 3600,
+      "secure": false,
+      "httponly": true,
+      "path": "/"
+    },
+
+    "template": {
+      "template_dir": "lib/templates",
+      "cache": true,
+      "auto_reload": true
+    },
+
+    "security": {
+        "secret_key": "your-very-long-and-secure-secret-key",
+        "csrf_token": "your-csrf-token",
+        "password_min_length": 8
+    }
+}

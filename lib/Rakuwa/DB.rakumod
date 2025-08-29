@@ -14,6 +14,7 @@ sub init-db is export {
         :password(%conf<db><password>),
         :database(%conf<db><database>),
         :charset(%conf<db><charset>),
+        :use-socket(%conf<db><use_socket> // False)
         );
 }
 

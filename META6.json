@@ -17,7 +17,8 @@
         "Cro::HTTP::Auth",
         "JSON::Class",
         "Cro::HTTP::Session::MySQL",
-        "HTML::Escape"
+        "HTML::Escape",
+        "Digest::SHA256::Native"
     ],
     "provides": {
         "Routes": "lib/Routes.rakumod",
