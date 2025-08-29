@@ -97,7 +97,7 @@ class Rakuwa::User::Actions is Rakuwa::Action {
 
         my $user_id = $.session.user-id;
         try {
-            say "name: ", $name;
+            # say "name: ", $name;
 
             $.db.query("UPDATE users SET name = ? WHERE user_id = ?", $name, $user_id);
             $.session.user-name = $name;

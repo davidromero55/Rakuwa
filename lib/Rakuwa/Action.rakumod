@@ -26,15 +26,15 @@ class Rakuwa::Action {
                 given $value.^name {
                     when 'Cro::HTTP::Body::MultiPartFormData::Part' {
                         if $value.filename:exists {
-                            say "File: $key, Filename: " ~ $value.filename;
+                            #say "File: $key, Filename: " ~ $value.filename;
                             %!params-files{$key} = $value;
                         } else {
-                            say "Param: $key, Value: " ~ $value.body-blob.decode('utf-8');
+                            #say "Param: $key, Value: " ~ $value.body-blob.decode('utf-8');
                             %!params{$key} = $value.body-blob.decode('utf-8');
                         }
                     }
                     default {
-                        say "Def Param: $key, Value: " ~ $value;
+                        # say "Def Param: $key, Value: " ~ $value;
                         %!params{$key} = $value;  # Keep the value as is
                     }
                 }
