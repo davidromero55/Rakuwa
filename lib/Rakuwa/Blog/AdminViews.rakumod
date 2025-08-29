@@ -179,7 +179,7 @@ class Rakuwa::Blog::AdminViews is Rakuwa::View {
                 :style('margin-right: 5px;')
             }, self._tag('span', {:class('material-symbols-outlined')}, 'edit'))
             ~ self._tag('a', {
-                :href("/blog/" ~ %row<actions>),
+                :href("/blog/entry/" ~ %row<actions>),
                 :class('btn btn-sm btn-secondary'),
                 :title('View Entry'),
                 :target('_blank'),
